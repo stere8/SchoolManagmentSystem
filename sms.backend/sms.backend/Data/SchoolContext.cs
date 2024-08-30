@@ -1,4 +1,4 @@
-// Path: /sms.backend/sms.backend/Data/SchoolContext.cs
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using sms.backend.Models;
@@ -18,17 +18,23 @@ namespace sms.backend.Data
         public DbSet<Timetable> Timetables { get; set; }
         public DbSet<Attendance> Attendances { get; set; }
         public DbSet<TeacherEnrollment> TeacherEnrollments { get; set; }
-        public DbSet<User> Users { get; set; } // Add this line
-        public DbSet<Parent> Parents { get; set; } // Add this line
-        public DbSet<Teacher> Teachers { get; set; } // Add this line
+        public DbSet<User> Users { get; set; }
+        public DbSet<Parent> Parents { get; set; }
+        public DbSet<Teacher> Teachers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder); // Ensure the base method is called
+
+            modelBuilder.Entity<IdentityUserLogin<string>>().HasKey(l => new { l.LoginProvider, l.ProviderKey });
+            modelBuilder.Entity<IdentityUserRole<string>>().HasKey(r => new { r.UserId, r.RoleId });
+            modelBuilder.Entity<IdentityUserToken<string>>().HasKey(t => new { t.UserId, t.LoginProvider, t.Name });
+
             modelBuilder.Entity<Enrollment>()
                 .HasKey(e => new { e.StudentId, e.ClassId });
-            // Define other relationships and keys as needed
             modelBuilder.Entity<TeacherEnrollment>()
                 .HasKey(e => new { e.StaffId, e.ClassId });
+
             // Define other relationships and keys as needed
         }
     }
