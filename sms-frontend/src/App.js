@@ -1,5 +1,7 @@
+// Path: /sms-frontend/src/App.js
+
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import axios from 'axios';
 import authService from './services/authService';
 import Navbar from './components/NavigationBar';
@@ -39,6 +41,10 @@ axios.interceptors.request.use(
 );
 
 function App() {
+    const isAuthenticated = () => {
+        return !!authService.getCurrentUser();
+    };
+
     return (
         <Router>
             <Navbar />
@@ -254,6 +260,14 @@ function App() {
                         <ProtectedRoute roles={['admin', 'teacher', 'student']}>
                             <Timetable />
                         </ProtectedRoute>
+                    }
+                />
+
+                {/* Default Route */}
+                <Route
+                    path="/"
+                    element={
+                        isAuthenticated() ? <Navigate to="/classes" /> : <Navigate to="/login" />
                     }
                 />
             </Routes>

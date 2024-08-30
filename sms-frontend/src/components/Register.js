@@ -1,3 +1,5 @@
+// Path: /sms-frontend/src/components/Register.js
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import authService from '../services/authService';
@@ -5,13 +7,17 @@ import authService from '../services/authService';
 const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [role, setRole] = useState('student'); // Default role
+    const [confirmPassword, setConfirmPassword] = useState('');
     const navigate = useNavigate();
 
     const handleRegister = async (e) => {
         e.preventDefault();
+        if (password !== confirmPassword) {
+            alert("Passwords do not match");
+            return;
+        }
         try {
-            await authService.register(email, password, role);
+            await authService.register(email, password);
             navigate('/login');
         } catch (error) {
             console.error('Registration failed', error);
@@ -34,11 +40,13 @@ const Register = () => {
                 placeholder="Password"
                 required
             />
-            <select value={role} onChange={(e) => setRole(e.target.value)}>
-                <option value="student">Student</option>
-                <option value="teacher">Teacher</option>
-                <option value="admin">Admin</option>
-            </select>
+            <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Confirm Password"
+                required
+            />
             <button type="submit">Register</button>
         </form>
     );
