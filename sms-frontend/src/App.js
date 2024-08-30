@@ -1,4 +1,7 @@
+import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import axios from 'axios';
+import authService from './services/authService';
 import Navbar from './components/NavigationBar';
 import Attendance from './components/Attendance';
 import Classes from './components/Classes';
@@ -17,6 +20,20 @@ import TeacherEnrollments from './components/TeacherEnrollments';
 import AddEditLesson from './components/AddEditLesson';
 import AddEditAttendance from './components/AddEditAttendance';
 import AddEditMark from './components/AddEditMark';
+
+// Axios interceptor to add JWT token to Authorization header
+axios.interceptors.request.use(
+    (config) => {
+        const user = authService.getCurrentUser();
+        if (user && user.token) {
+            config.headers['Authorization'] = 'Bearer ' + user.token;
+        }
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
 
 function App() {
     return (

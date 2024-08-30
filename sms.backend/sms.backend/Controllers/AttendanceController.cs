@@ -5,9 +5,11 @@ using sms.backend.Data;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using sms.backend.Models;
+using Microsoft.AspNetCore.Authorization;
 
 [ApiController]
 [Route("[controller]")]
+[Authorize]
 public class AttendanceController : ControllerBase
 {
     private readonly SchoolContext _context;
