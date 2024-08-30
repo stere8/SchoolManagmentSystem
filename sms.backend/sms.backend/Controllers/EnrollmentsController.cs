@@ -4,7 +4,7 @@ using sms.backend.Data;
 using sms.backend.Views;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class EnrollmentsController : ControllerBase
 {
     private readonly SchoolContext _context;
@@ -16,8 +16,8 @@ public class EnrollmentsController : ControllerBase
         _logger = logger;
     }
 
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<EnrollmentsViews>>> GetEnrollments()
+    [HttpGet("all")]
+    public async Task<ActionResult<IEnumerable<EnrollmentsViews>>> GetAllEnrollments()
     {
         _logger.LogInformation("Getting all enrollments");
         var enrollments = await _context.Enrollments.ToListAsync();
@@ -77,7 +77,6 @@ public class EnrollmentsController : ControllerBase
 
     [HttpPost]
     public async Task<ActionResult<Enrollment>> PostEnrollment(EnrollmentInsert enrollmentInsert)
-    
     {
         _logger.LogInformation("Creating new enrollment");
 
@@ -128,7 +127,6 @@ public class EnrollmentsController : ControllerBase
 
         return NoContent();
     }
-
 
     [HttpDelete("{studentId}/{classId}")]
     public async Task<IActionResult> DeleteEnrollment(int studentId, int classId)

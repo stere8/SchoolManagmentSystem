@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class TeacherEnrollmentsController : ControllerBase
 {
     private readonly SchoolContext _context;
@@ -19,8 +19,8 @@ public class TeacherEnrollmentsController : ControllerBase
         _logger = logger;
     }
 
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<TeacherEnrollmentsViews>>> GetTeacherEnrollments()
+    [HttpGet("all")]
+    public async Task<ActionResult<IEnumerable<TeacherEnrollmentsViews>>> GetAllTeacherEnrollments()
     {
         _logger.LogInformation("Getting all teacher enrollments");
         var teacherEnrollments = await _context.TeacherEnrollments.ToListAsync();
@@ -64,7 +64,6 @@ public class TeacherEnrollmentsController : ControllerBase
 
         return teacherEnrollment;
     }
-
 
     [HttpGet("{teacherId}/{classId}")]
     public async Task<ActionResult<TeacherEnrollment>> GetTeacherEnrollment(int teacherId, int classId)
@@ -132,5 +131,4 @@ public class TeacherEnrollmentsController : ControllerBase
 
         return NoContent();
     }
-
 }

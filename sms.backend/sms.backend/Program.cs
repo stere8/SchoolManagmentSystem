@@ -48,9 +48,14 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddEndpointsApiExplorer();
+
+// Add Swagger services with ConflictingActionsResolver
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+
+    // Add the ConflictingActionsResolver
+    c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
 });
 
 // Add CORS policy
@@ -77,6 +82,7 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
@@ -99,6 +105,7 @@ app.UseRouting();
 app.UseCors("AllowSpecificOrigin");
 app.UseCors("AllowSpecificOrigin2");
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
