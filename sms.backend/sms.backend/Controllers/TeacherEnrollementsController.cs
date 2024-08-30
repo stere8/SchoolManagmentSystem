@@ -39,7 +39,7 @@ public class TeacherEnrollmentsController : ControllerBase
                 var teacherName = $"{teacher.FirstName} {teacher.LastName}";
                 returnedViewsList.Add(new TeacherEnrollmentsViews()
                 {
-                    EnrollmentRef = enroll.TeacherEnrollmentID,
+                    EnrollmentRef = enroll.TeacherEnrollmentId,
                     AssignedClass = classItem.Name,
                     EnrolledTeacher = teacherName,
                     AssignedLesson = teacher.SubjectExpertise
@@ -74,7 +74,7 @@ public class TeacherEnrollmentsController : ControllerBase
         var teacherName = $"{teacher.FirstName} {teacher.LastName}";
         var teacherEnrollmentView = new TeacherEnrollmentsViews()
         {
-            EnrollmentRef = enrollment.TeacherEnrollmentID,
+            EnrollmentRef = enrollment.TeacherEnrollmentId,
             AssignedClass = classItem.Name,
             EnrolledTeacher = teacherName,
             AssignedLesson = teacher.SubjectExpertise
@@ -84,7 +84,7 @@ public class TeacherEnrollmentsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<TeacherEnrollments>> PostTeacherEnrollment(TeacherEnrollments enrollment)
+    public async Task<ActionResult<TeacherEnrollment>> PostTeacherEnrollment(TeacherEnrollment enrollment)
     {
         _logger.LogInformation("Creating new teacher enrollment");
         _context.TeacherEnrollments.Add(enrollment);
