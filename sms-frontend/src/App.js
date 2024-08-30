@@ -1,7 +1,5 @@
-// Path: /sms-frontend/src/App.js
-
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import axios from 'axios';
 import authService from './services/authService';
 import Navbar from './components/NavigationBar';
