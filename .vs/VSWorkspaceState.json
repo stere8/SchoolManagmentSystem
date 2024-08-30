@@ -1,7 +1,9 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\sms-frontend",
+    "\\sms.backend"
   ],
-  "SelectedNode": "\\sms.backend.sln",
+  "SelectedNode": "\\sms.backend\\sms.backend.sln",
   "PreviewInSolutionExplorer": false
 }
