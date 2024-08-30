@@ -3,26 +3,27 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35209.166
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sms.backend", "sms.backend\sms.backend.csproj", "{C130121D-2721-47D3-9F66-5EE1C77D96B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sms.backend", "sms.backend\sms.backend.csproj", "{7434C6AF-C7FD-4F39-A139-38951E899434}"
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "sms-frontend", "..\..\SMS\SchoolManagmentSystem\sms-frontend\", "{3E014F20-D1A6-479D-AFE9-7CFCDD109016}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "sms-frontend", "..\sms-frontend\", "{4E5C9E1F-DBF4-4998-9EED-2147EAE65591}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.8"
-		Debug.AspNetCompiler.VirtualPath = "/localhost_4876"
-		Debug.AspNetCompiler.PhysicalPath = "..\..\SMS\SchoolManagmentSystem\sms-frontend\"
-		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_4876\"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_14341"
+		Debug.AspNetCompiler.PhysicalPath = "..\sms-frontend\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_14341\"
 		Debug.AspNetCompiler.Updateable = "true"
 		Debug.AspNetCompiler.ForceOverwrite = "true"
 		Debug.AspNetCompiler.FixedNames = "false"
 		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.VirtualPath = "/localhost_4876"
-		Release.AspNetCompiler.PhysicalPath = "..\..\SMS\SchoolManagmentSystem\sms-frontend\"
-		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_4876\"
+		Release.AspNetCompiler.VirtualPath = "/localhost_14341"
+		Release.AspNetCompiler.PhysicalPath = "..\sms-frontend\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_14341\"
 		Release.AspNetCompiler.Updateable = "true"
 		Release.AspNetCompiler.ForceOverwrite = "true"
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
-		VWDPort = "4876"
+		VWDPort = "14341"
+		SlnRelativePath = "..\sms-frontend\"
 	EndProjectSection
 EndProject
 Global
@@ -31,14 +32,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C130121D-2721-47D3-9F66-5EE1C77D96B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C130121D-2721-47D3-9F66-5EE1C77D96B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C130121D-2721-47D3-9F66-5EE1C77D96B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C130121D-2721-47D3-9F66-5EE1C77D96B5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3E014F20-D1A6-479D-AFE9-7CFCDD109016}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3E014F20-D1A6-479D-AFE9-7CFCDD109016}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3E014F20-D1A6-479D-AFE9-7CFCDD109016}.Release|Any CPU.ActiveCfg = Debug|Any CPU
-		{3E014F20-D1A6-479D-AFE9-7CFCDD109016}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{7434C6AF-C7FD-4F39-A139-38951E899434}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7434C6AF-C7FD-4F39-A139-38951E899434}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7434C6AF-C7FD-4F39-A139-38951E899434}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7434C6AF-C7FD-4F39-A139-38951E899434}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E5C9E1F-DBF4-4998-9EED-2147EAE65591}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E5C9E1F-DBF4-4998-9EED-2147EAE65591}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E5C9E1F-DBF4-4998-9EED-2147EAE65591}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E5C9E1F-DBF4-4998-9EED-2147EAE65591}.Release|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
