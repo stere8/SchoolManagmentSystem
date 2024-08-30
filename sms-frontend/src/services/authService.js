@@ -1,11 +1,16 @@
 import axios from 'axios';
-import { API_URL } from '.../settings';
+import { API_URL } from '../settings';
 
 const login = async (email, password) => {
     const response = await axios.post(`${API_URL}/auth/login`, { email, password });
     if (response.data.token) {
         localStorage.setItem('user', JSON.stringify(response.data));
     }
+    return response.data;
+};
+
+const register = async (email, password, role) => {
+    const response = await axios.post(`${API_URL}/auth/register`, { email, password, role });
     return response.data;
 };
 
@@ -19,6 +24,7 @@ const getCurrentUser = () => {
 
 export default {
     login,
+    register,
     logout,
     getCurrentUser,
 };
