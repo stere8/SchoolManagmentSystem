@@ -39,9 +39,11 @@ public class AuthController : ControllerBase
 
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginModel model)
+    
     {
         var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
 
+        
         if (result.Succeeded)
         {
             var user = await _userManager.FindByEmailAsync(model.Email);

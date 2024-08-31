@@ -12,8 +12,8 @@ using sms.backend.Data;
 namespace sms.backend.Migrations
 {
     [DbContext(typeof(SchoolContext))]
-    [Migration("20240830150710_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20240831111225_AddIdentityTables")]
+    partial class AddIdentityTables
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
