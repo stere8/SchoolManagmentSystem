@@ -9,9 +9,16 @@ const login = async (email, password) => {
     return response.data;
 };
 
-const register = async (email, password) => {
-    const response = await axios.post(`${BASE_URL}/auth/register`, { email, password });
-    return response.data;
+const register = async (email, password, role) => {
+    try {
+        const response = await axios.post(`${BASE_URL}/auth/register`, { email, password, role });
+        return response.data;
+    } catch (error) {
+        if (error.response && error.response.data) {
+            throw error.response.data;
+        }
+        throw new Error('Registration failed');
+    }
 };
 
 const logout = () => {

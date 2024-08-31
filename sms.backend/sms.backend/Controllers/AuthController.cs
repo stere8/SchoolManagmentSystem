@@ -33,7 +33,8 @@ public class AuthController : ControllerBase
             return Ok(new { message = "User registered successfully" });
         }
 
-        return BadRequest(result.Errors);
+        var errors = result.Errors.Select(e => e.Description).ToList();
+        return BadRequest(new { errors });
     }
 
     [HttpPost("login")]
