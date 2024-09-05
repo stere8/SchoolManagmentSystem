@@ -24,31 +24,46 @@ public class ClassesController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ClassesView>>> GetClasses()
     {
-        _logger.LogInformation("Getting all classes");
-        var classes = await _context.Classes.ToListAsync();
-        List<ClassesView> ClassViewToReturn = new List<ClassesView>();
-
-        foreach (var oneClass in classes)
+        try
         {
-            ClassViewToReturn.Add(Fill(oneClass.ClassId));
-        }
+            _logger.LogInformation("Getting all classes");
+            var classes = await _context.Classes.ToListAsync();
+            List<ClassesView> ClassViewToReturn = new List<ClassesView>();
 
-        return ClassViewToReturn;
+            foreach (var oneClass in classes)
+            {
+                ClassViewToReturn.Add(Fill(oneClass.ClassId));
+            }
+
+            return ClassViewToReturn;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while getting all classes");
+            return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+        }
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<ClassesView>> GetClass(int id)
     {
-        _logger.LogInformation("Getting class with ID: {Id}", id);
-        var classItem = await _context.Classes.FindAsync(id);
-        if (classItem == null)
+        try
         {
-            _logger.LogWarning("Class with ID: {Id} not found", id);
-            return NotFound();
+            _logger.LogInformation("Getting class with ID: {Id}", id);
+            var classItem = await _context.Classes.FindAsync(id);
+            if (classItem == null)
+            {
+                _logger.LogWarning("Class with ID: {Id} not found", id);
+                return NotFound();
+            }
+            var wegot = Fill(classItem.ClassId);
+            return wegot;
         }
-        var wegot = Fill(classItem.ClassId);
-        
-        return wegot;
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while getting the class with ID: {Id}", id);
+            return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+        }
     }
 
     private ClassesView Fill(int classID)
@@ -57,16 +72,16 @@ public class ClassesController : ControllerBase
             .Where(e => e.ClassId == classID)
             .Select(e => e.StudentId)
             .ToList();
-        
+
         List<Student> students = _context.Students
             .Where(student => studentsId.Contains(student.StudentId))
             .ToList();
-        
+
         List<int> teacherIds = _context.TeacherEnrollments
             .Where(e => e.ClassId == classID)
             .Select(e => e.StaffId)
             .ToList();
-        
+
         List<Staff> classTeachers = _context.Staff
             .Where(teacher => teacherIds.Contains(teacher.StaffId))
             .ToList();
@@ -105,36 +120,60 @@ public class ClassesController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Class>> PostClass(Class? classItem)
     {
-        _logger.LogInformation("Creating new class");
-        _context.Classes.Add(classItem);
-        await _context.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetClass), new { id = classItem.ClassId }, classItem);
+        try
+        {
+            _logger.LogInformation("Creating new class");
+            _context.Classes.Add(classItem);
+            await _context.SaveChangesAsync();
+            return CreatedAtAction(nameof(GetClass), new { id = classItem.ClassId }, classItem);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while creating a new class");
+            return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+        }
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> PutClass(int id, Class classItem)
     {
-        _logger.LogInformation("Updating class with ID: {Id}", id);
-        if (id != classItem.ClassId)
+        try
         {
-            return BadRequest();
+            _logger.LogInformation("Updating class with ID: {Id}", id);
+            if (id != classItem.ClassId)
+            {
+                return BadRequest();
+            }
+            _context.Entry(classItem).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return NoContent();
         }
-        _context.Entry(classItem).State = EntityState.Modified;
-        await _context.SaveChangesAsync();
-        return NoContent();
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while updating the class with ID: {Id}", id);
+            return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+        }
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteClass(int id)
     {
-        _logger.LogInformation("Deleting class with ID: {Id}", id);
-        var classItem = await _context.Classes.FindAsync(id);
-        if (classItem == null)
+        try
         {
-            return NotFound();
+            _logger.LogInformation("Deleting class with ID: {Id}", id);
+            var classItem = await _context.Classes.FindAsync(id);
+            if (classItem == null)
+            {
+                return NotFound();
+            }
+            _context.Classes.Remove(classItem);
+            await _context.SaveChangesAsync();
+            return NoContent();
         }
-        _context.Classes.Remove(classItem);
-        await _context.SaveChangesAsync();
-        return NoContent();
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while deleting the class with ID: {Id}", id);
+            return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+        }
     }
 }

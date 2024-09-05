@@ -26,52 +26,76 @@ namespace sms.backend.Controllers
         [HttpGet("timetable")]
         public async Task<ActionResult<IEnumerable<TimetableView>>> GetTimetable()
         {
-            _logger.LogInformation("Getting student timetable");
-            var timetables = await _context.Timetables
-                .Join(_context.Lessons,
-                    timetable => timetable.LessonId,
-                    lesson => lesson.LessonId,
-                    (timetable, lesson) => new TimetableView
-                    {
-                        DayOfWeek = timetable.DayOfWeek,
-                        LessonName = lesson.Name,
-                        StartTime = timetable.StartTime,
-                        EndTime = timetable.EndTime
-                    })
-                .ToListAsync();
-
-            if (timetables == null || !timetables.Any())
+            try
             {
-                _logger.LogWarning("No timetables found");
-                return NotFound();
+                _logger.LogInformation("Getting student timetable");
+                var timetables = await _context.Timetables
+                    .Join(_context.Lessons,
+                        timetable => timetable.LessonId,
+                        lesson => lesson.LessonId,
+                        (timetable, lesson) => new TimetableView
+                        {
+                            DayOfWeek = timetable.DayOfWeek,
+                            LessonName = lesson.Name,
+                            StartTime = timetable.StartTime,
+                            EndTime = timetable.EndTime
+                        })
+                    .ToListAsync();
+
+                if (timetables == null || !timetables.Any())
+                {
+                    _logger.LogWarning("No timetables found");
+                    return NotFound();
+                }
+                return Ok(timetables);
             }
-            return Ok(timetables);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while getting the student timetable");
+                return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+            }
         }
 
         [HttpGet("grades")]
         public async Task<ActionResult<IEnumerable<Mark>>> GetGrades()
         {
-            _logger.LogInformation("Getting student grades");
-            var grades = await _context.Marks.ToListAsync();
-            if (grades == null || !grades.Any())
+            try
             {
-                _logger.LogWarning("No grades found");
-                return NotFound();
+                _logger.LogInformation("Getting student grades");
+                var grades = await _context.Marks.ToListAsync();
+                if (grades == null || !grades.Any())
+                {
+                    _logger.LogWarning("No grades found");
+                    return NotFound();
+                }
+                return Ok(grades);
             }
-            return Ok(grades);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while getting the student grades");
+                return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+            }
         }
 
         [HttpGet("attendance")]
         public async Task<ActionResult<IEnumerable<Attendance>>> GetAttendance()
         {
-            _logger.LogInformation("Getting student attendance");
-            var attendance = await _context.Attendances.ToListAsync();
-            if (attendance == null || !attendance.Any())
+            try
             {
-                _logger.LogWarning("No attendance records found");
-                return NotFound();
+                _logger.LogInformation("Getting student attendance");
+                var attendance = await _context.Attendances.ToListAsync();
+                if (attendance == null || !attendance.Any())
+                {
+                    _logger.LogWarning("No attendance records found");
+                    return NotFound();
+                }
+                return Ok(attendance);
             }
-            return Ok(attendance);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while getting the student attendance");
+                return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+            }
         }
     }
 }
