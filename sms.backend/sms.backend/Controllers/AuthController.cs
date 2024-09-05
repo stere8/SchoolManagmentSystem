@@ -1,5 +1,4 @@
-﻿// /sms.backend/sms.backend/Controllers/AuthController.cs
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using sms.backend.Models;
@@ -15,7 +14,8 @@ public class AuthController : ControllerBase
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly IConfiguration _configuration;
 
-    public AuthController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration)
+    public AuthController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
+        IConfiguration configuration)
     {
         _userManager = userManager;
         _signInManager = signInManager;
@@ -25,6 +25,12 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterModel model)
     {
+        var existingUser = await _userManager.FindByEmailAsync(model.Email);
+        if (existingUser != null)
+        {
+            return BadRequest(new { errors = new List<string> { "Email is already in use" } });
+        }
+
         var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Role = model.Role };
         var result = await _userManager.CreateAsync(user, model.Password);
 
@@ -39,11 +45,10 @@ public class AuthController : ControllerBase
 
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginModel model)
-    
     {
+
         var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
 
-        
         if (result.Succeeded)
         {
             var user = await _userManager.FindByEmailAsync(model.Email);
@@ -78,17 +83,17 @@ public class AuthController : ControllerBase
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
-}
 
-public class RegisterModel
-{
-    public string Email { get; set; }
-    public string Password { get; set; }
-    public string Role { get; set; }
-}
+    public class RegisterModel
+    {
+        public string Email { get; set; }
+        public string Password { get; set; }
+        public string Role { get; set; }
+    }
 
-public class LoginModel
-{
-    public string Email { get; set; }
-    public string Password { get; set; }
+    public class LoginModel
+    {
+        public string Email { get; set; }
+        public string Password { get; set; }
+    }
 }
