@@ -12,7 +12,8 @@ const Login = () => {
         e.preventDefault();
         try {
             await authService.login(email, password);
-            navigate('/');
+            console.log('Login successful'); // Log success message
+            navigate('/'); // Navigate to home page
         } catch (error) {
             console.error('Login failed', error);
         }
