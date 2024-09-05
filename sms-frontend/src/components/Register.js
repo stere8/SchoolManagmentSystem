@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import authService from '../services/authService';
+import '../Styles/Register.css'
 
 const Register = () => {
     const [email, setEmail] = useState('');
