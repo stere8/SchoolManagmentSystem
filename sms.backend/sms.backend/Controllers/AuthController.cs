@@ -1,5 +1,4 @@
-﻿// /sms.backend/sms.backend/Controllers/AuthController.cs
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using sms.backend.Models;
@@ -14,44 +13,67 @@ public class AuthController : ControllerBase
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly IConfiguration _configuration;
+    private readonly ILogger<AuthController> _logger;
 
-    public AuthController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration)
+    public AuthController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
+        IConfiguration configuration, ILogger<AuthController> logger)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _configuration = configuration;
+        _logger = logger;
     }
 
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterModel model)
     {
-        var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Role = model.Role };
-        var result = await _userManager.CreateAsync(user, model.Password);
-
-        if (result.Succeeded)
+        try
         {
-            return Ok(new { message = "User registered successfully" });
-        }
+            var existingUser = await _userManager.FindByEmailAsync(model.Email);
+            if (existingUser != null)
+            {
+                return BadRequest(new { errors = new List<string> { "Email is already in use" } });
+            }
 
-        var errors = result.Errors.Select(e => e.Description).ToList();
-        return BadRequest(new { errors });
+            var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Role = model.Role };
+            var result = await _userManager.CreateAsync(user, model.Password);
+
+            if (result.Succeeded)
+            {
+                return Ok(new { message = "User registered successfully" });
+            }
+
+            var errors = result.Errors.Select(e => e.Description).ToList();
+            return BadRequest(new { errors });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while registering a new user");
+            return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+        }
     }
 
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginModel model)
-    
     {
-        var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
-
-        
-        if (result.Succeeded)
+        try
         {
-            var user = await _userManager.FindByEmailAsync(model.Email);
-            var token = GenerateJwtToken(user);
-            return Ok(new { token });
-        }
+            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
 
-        return Unauthorized();
+            if (result.Succeeded)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                var token = GenerateJwtToken(user);
+                return Ok(new { token });
+            }
+
+            return Unauthorized();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while logging in");
+            return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+        }
     }
 
     private string GenerateJwtToken(ApplicationUser user)
@@ -78,17 +100,17 @@ public class AuthController : ControllerBase
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
-}
 
-public class RegisterModel
-{
-    public string Email { get; set; }
-    public string Password { get; set; }
-    public string Role { get; set; }
-}
+    public class RegisterModel
+    {
+        public string Email { get; set; }
+        public string Password { get; set; }
+        public string Role { get; set; }
+    }
 
-public class LoginModel
-{
-    public string Email { get; set; }
-    public string Password { get; set; }
+    public class LoginModel
+    {
+        public string Email { get; set; }
+        public string Password { get; set; }
+    }
 }

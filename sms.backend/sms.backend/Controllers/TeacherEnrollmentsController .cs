@@ -22,113 +22,161 @@ public class TeacherEnrollmentsController : ControllerBase
     [HttpGet("all")]
     public async Task<ActionResult<IEnumerable<TeacherEnrollmentsViews>>> GetAllTeacherEnrollments()
     {
-        _logger.LogInformation("Getting all teacher enrollments");
-        var teacherEnrollments = await _context.TeacherEnrollments.ToListAsync();
-        var staff = await _context.Staff.ToListAsync();
-        var classes = await _context.Classes.ToListAsync();
-
-        var returnedViewsList = new List<TeacherEnrollmentsViews>();
-
-        foreach (TeacherEnrollment enroll in teacherEnrollments)
+        try
         {
-            var teacher = staff.FirstOrDefault(s => s.StaffId == enroll.StaffId);
-            var classItem = classes.FirstOrDefault(c => c.ClassId == enroll.ClassId);
+            _logger.LogInformation("Getting all teacher enrollments");
+            var teacherEnrollments = await _context.TeacherEnrollments.ToListAsync();
+            var staff = await _context.Staff.ToListAsync();
+            var classes = await _context.Classes.ToListAsync();
 
-            if (teacher != null && classItem != null)
+            var returnedViewsList = new List<TeacherEnrollmentsViews>();
+
+            foreach (TeacherEnrollment enroll in teacherEnrollments)
             {
-                var teacherName = $"{teacher.FirstName} {teacher.LastName}";
-                returnedViewsList.Add(new TeacherEnrollmentsViews()
-                {
-                    EnrollmentRef = enroll.TeacherEnrollmentId,
-                    AssignedClass = classItem.Name,
-                    EnrolledTeacher = teacherName,
-                    AssignedLesson = teacher.SubjectExpertise
-                });
-            }
-        }
+                var teacher = staff.FirstOrDefault(s => s.StaffId == enroll.StaffId);
+                var classItem = classes.FirstOrDefault(c => c.ClassId == enroll.ClassId);
 
-        _logger.LogInformation("Successfully retrieved teacher enrollments.");
-        return Ok(returnedViewsList);
+                if (teacher != null && classItem != null)
+                {
+                    var teacherName = $"{teacher.FirstName} {teacher.LastName}";
+                    returnedViewsList.Add(new TeacherEnrollmentsViews()
+                    {
+                        EnrollmentRef = enroll.TeacherEnrollmentId,
+                        AssignedClass = classItem.Name,
+                        EnrolledTeacher = teacherName,
+                        AssignedLesson = teacher.SubjectExpertise
+                    });
+                }
+            }
+
+            _logger.LogInformation("Successfully retrieved teacher enrollments.");
+            return Ok(returnedViewsList);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while getting all teacher enrollments");
+            return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+        }
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<TeacherEnrollment>> GetTeacherEnrollmentById(int id)
     {
-        _logger.LogInformation("Getting teacher enrollment with ID: {Id}", id);
-        var teacherEnrollment = await _context.TeacherEnrollments.FindAsync(id);
-        if (teacherEnrollment == null)
+        try
         {
-            _logger.LogWarning("Teacher Enrollment with ID: {Id} not found", id);
-            return NotFound();
-        }
+            _logger.LogInformation("Getting teacher enrollment with ID: {Id}", id);
+            var teacherEnrollment = await _context.TeacherEnrollments.FindAsync(id);
+            if (teacherEnrollment == null)
+            {
+                _logger.LogWarning("Teacher Enrollment with ID: {Id} not found", id);
+                return NotFound();
+            }
 
-        return teacherEnrollment;
+            return teacherEnrollment;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while getting the teacher enrollment with ID: {Id}", id);
+            return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+        }
     }
 
     [HttpGet("{teacherId}/{classId}")]
     public async Task<ActionResult<TeacherEnrollment>> GetTeacherEnrollment(int teacherId, int classId)
     {
-        _logger.LogInformation("Getting teacher enrollment for Teacher ID: {TeacherId} and Class ID: {ClassId}", teacherId, classId);
-        var teacherEnrollment = await _context.TeacherEnrollments.FindAsync(teacherId, classId);
-        if (teacherEnrollment == null)
+        try
         {
-            _logger.LogWarning("Teacher Enrollment for Teacher ID: {TeacherId} and Class ID: {ClassId} not found", teacherId, classId);
-            return NotFound();
-        }
+            _logger.LogInformation("Getting teacher enrollment for Teacher ID: {TeacherId} and Class ID: {ClassId}", teacherId, classId);
+            var teacherEnrollment = await _context.TeacherEnrollments.FindAsync(teacherId, classId);
+            if (teacherEnrollment == null)
+            {
+                _logger.LogWarning("Teacher Enrollment for Teacher ID: {TeacherId} and Class ID: {ClassId} not found", teacherId, classId);
+                return NotFound();
+            }
 
-        return teacherEnrollment;
+            return teacherEnrollment;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while getting the teacher enrollment for Teacher ID: {TeacherId} and Class ID: {ClassId}", teacherId, classId);
+            return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+        }
     }
 
     [HttpPost]
     public async Task<ActionResult<TeacherEnrollment>> PostTeacherEnrollment(TeacherEnrollment teacherEnrollment)
     {
-        _logger.LogInformation("Creating new teacher enrollment");
-        _context.TeacherEnrollments.Add(teacherEnrollment);
-        await _context.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetTeacherEnrollment), new { teacherId = teacherEnrollment.StaffId, classId = teacherEnrollment.ClassId }, teacherEnrollment);
+        try
+        {
+            _logger.LogInformation("Creating new teacher enrollment");
+            _context.TeacherEnrollments.Add(teacherEnrollment);
+            await _context.SaveChangesAsync();
+            return CreatedAtAction(nameof(GetTeacherEnrollment), new { teacherId = teacherEnrollment.StaffId, classId = teacherEnrollment.ClassId }, teacherEnrollment);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while creating a new teacher enrollment");
+            return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+        }
     }
 
     [HttpDelete("{teacherId}/{classId}")]
     public async Task<IActionResult> DeleteTeacherEnrollment(int teacherId, int classId)
     {
-        _logger.LogInformation("Deleting teacher enrollment for Teacher ID: {TeacherId} and Class ID: {ClassId}", teacherId, classId);
-        var teacherEnrollment = await _context.TeacherEnrollments.FindAsync(teacherId, classId);
-        if (teacherEnrollment == null)
+        try
         {
-            return NotFound();
-        }
+            _logger.LogInformation("Deleting teacher enrollment for Teacher ID: {TeacherId} and Class ID: {ClassId}", teacherId, classId);
+            var teacherEnrollment = await _context.TeacherEnrollments.FindAsync(teacherId, classId);
+            if (teacherEnrollment == null)
+            {
+                return NotFound();
+            }
 
-        _context.TeacherEnrollments.Remove(teacherEnrollment);
-        await _context.SaveChangesAsync();
-        return NoContent();
+            _context.TeacherEnrollments.Remove(teacherEnrollment);
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while deleting the teacher enrollment for Teacher ID: {TeacherId} and Class ID: {ClassId}", teacherId, classId);
+            return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+        }
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateTeacherEnrollment(int id, TeacherEnrollment updatedEnrollment)
     {
-        if (id != updatedEnrollment.TeacherEnrollmentId)
-        {
-            return BadRequest("TeacherEnrollmentID mismatch.");
-        }
-
-        _context.Entry(updatedEnrollment).State = EntityState.Modified;
-
         try
         {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!_context.TeacherEnrollments.Any(e => e.TeacherEnrollmentId == id))
+            if (id != updatedEnrollment.TeacherEnrollmentId)
             {
-                return NotFound();
+                return BadRequest("TeacherEnrollmentID mismatch.");
             }
-            else
-            {
-                throw;
-            }
-        }
 
-        return NoContent();
+            _context.Entry(updatedEnrollment).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!_context.TeacherEnrollments.Any(e => e.TeacherEnrollmentId == id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while updating the teacher enrollment with ID: {Id}", id);
+            return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+        }
     }
 }

@@ -50,6 +50,7 @@ namespace sms.backend.Migrations
                 END
             ");
 
+            // Check if the AspNetUserClaims table exists before creating it
             migrationBuilder.Sql(@"
                 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='AspNetUserClaims' AND xtype='U')
                 BEGIN
@@ -60,6 +61,20 @@ namespace sms.backend.Migrations
                         [ClaimValue] nvarchar(max) NULL,
                         CONSTRAINT [PK_AspNetUserClaims] PRIMARY KEY ([Id]),
                         CONSTRAINT [FK_AspNetUserClaims_AspNetUsers_UserId] FOREIGN KEY ([UserId]) REFERENCES [AspNetUsers] ([Id]) ON DELETE CASCADE
+                    );
+                END
+            ");
+
+            // Check if the AspNetUserRoles table exists before creating it
+            migrationBuilder.Sql(@"
+                IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='AspNetUserRoles' AND xtype='U')
+                BEGIN
+                    CREATE TABLE [AspNetUserRoles] (
+                        [UserId] nvarchar(450) NOT NULL,
+                        [RoleId] nvarchar(450) NOT NULL,
+                        CONSTRAINT [PK_AspNetUserRoles] PRIMARY KEY ([UserId], [RoleId]),
+                        CONSTRAINT [FK_AspNetUserRoles_AspNetUsers_UserId] FOREIGN KEY ([UserId]) REFERENCES [AspNetUsers] ([Id]) ON DELETE CASCADE,
+                        CONSTRAINT [FK_AspNetUserRoles_AspNetRoles_RoleId] FOREIGN KEY ([RoleId]) REFERENCES [AspNetRoles] ([Id]) ON DELETE CASCADE
                     );
                 END
             ");
