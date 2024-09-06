@@ -32,7 +32,7 @@ public class ParentsController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while getting children for parent with ID: {Id}", id);
-            return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+            return StatusCode(500, $"An error occurred while processing your parent request.{ex.Message}");
         }
     }
 
@@ -53,7 +53,7 @@ public class ParentsController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while adding a child for parent with ID: {Id}", id);
-            return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+            return StatusCode(500, $"An error occurred while processing your parent request.{ex.Message}");
         }
     }
 }

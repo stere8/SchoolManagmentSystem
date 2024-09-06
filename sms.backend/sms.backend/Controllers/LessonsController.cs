@@ -2,6 +2,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using sms.backend.Data;
 using sms.backend.Models;
+using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 [ApiController]
 [Route("[controller]")]
@@ -27,7 +31,7 @@ public class LessonsController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while getting all lessons");
-            return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+            return StatusCode(500, $"An error occurred while processing your lessons request. {ex.Message}");
         }
     }
 
@@ -48,11 +52,33 @@ public class LessonsController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while getting the lesson with ID: {Id}", id);
-            return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+            return StatusCode(500, $"An error occurred while processing your lessons request. {ex.Message}");
         }
     }
 
-    [HttpPost]
+    [HttpGet("grade/{gradeLevel}")]
+    public async Task<ActionResult<IEnumerable<Lesson>>> GetLessonsByGradeLevel(int gradeLevel)
+    {
+        try
+        {
+            _logger.LogInformation("Getting lessons for grade level: {GradeLevel}", gradeLevel);
+            var lessons = await _context.Lessons.Where(l => l.GradeLevel == gradeLevel).ToListAsync();
+            if (lessons == null || !lessons.Any())
+            {
+                _logger.LogWarning("No lessons found for grade level: {GradeLevel}", gradeLevel);
+                return NotFound();
+            }
+            return lessons;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while getting lessons for grade level: {GradeLevel}", gradeLevel);
+            return StatusCode(500, $"An error occurred while processing your lessons request. {ex.Message}");
+        }
+    }
+    }
+
+[HttpPost]
     public async Task<ActionResult<Lesson>> PostLesson(Lesson lesson)
     {
         try
@@ -65,7 +91,7 @@ public class LessonsController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while creating a new lesson");
-            return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+            return StatusCode(500, $"An error occurred while processing your lessons request. {ex.Message}");
         }
     }
 
@@ -85,7 +111,7 @@ public class LessonsController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while updating the lesson with ID: {Id}", id);
-            return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+            return StatusCode(500, $"An error occurred while processing your lessons request. {ex.Message}");
         }
     }
 
@@ -107,7 +133,7 @@ public class LessonsController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while deleting the lesson with ID: {Id}", id);
-            return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+            return StatusCode(500, $"An error occurred while processing your lessons request. {ex.Message}");
         }
     }
 }

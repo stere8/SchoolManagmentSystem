@@ -29,7 +29,7 @@ public class StaffController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while getting all staff members");
-            return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+            return StatusCode(500, $"An error occurred while processing your staff request.{ex.Message}");
         }
     }
 
@@ -50,7 +50,7 @@ public class StaffController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while getting the staff member with ID: {Id}", id);
-            return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+            return StatusCode(500, $"An error occurred while processing your staff request.{ex.Message}");
         }
     }
 
@@ -67,7 +67,7 @@ public class StaffController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while creating a new staff member");
-            return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+            return StatusCode(500, $"An error occurred while processing your staff request.{ex.Message}");
         }
     }
 
@@ -88,7 +88,7 @@ public class StaffController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while updating the staff member with ID: {Id}", id);
-            return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+            return StatusCode(500, $"An error occurred while processing your staff request.{ex.Message}");
         }
     }
 
@@ -110,7 +110,7 @@ public class StaffController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while deleting the staff member with ID: {Id}", id);
-            return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+            return StatusCode(500, $"An error occurred while processing your staff request.{ex.Message}");
         }
     }
 }

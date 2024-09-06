@@ -191,7 +191,7 @@ namespace sms.backend.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Value")
+                    b.Property<string>("MarkValue")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UserId", "LoginProvider", "Name");
@@ -413,7 +413,7 @@ namespace sms.backend.Migrations
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Value")
+                    b.Property<decimal>("MarkValue")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("MarkId");

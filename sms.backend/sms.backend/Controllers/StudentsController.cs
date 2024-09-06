@@ -29,7 +29,7 @@ public class StudentsController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while getting all students");
-            return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+            return StatusCode(500, $"An error occurred while processing your student request.{ex.Message}");
         }
     }
 
@@ -50,7 +50,7 @@ public class StudentsController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while getting the student with ID: {Id}", id);
-            return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+            return StatusCode(500, $"An error occurred while processing your student request.{ex.Message}");
         }
     }
 
@@ -67,7 +67,7 @@ public class StudentsController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while creating a new student");
-            return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+            return StatusCode(500, $"An error occurred while processing your student request.{ex.Message}");
         }
     }
 
@@ -88,7 +88,7 @@ public class StudentsController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while updating the student with ID: {Id}", id);
-            return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+            return StatusCode(500, $"An error occurred while processing your student request.{ex.Message}");
         }
     }
 
@@ -110,7 +110,7 @@ public class StudentsController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while deleting the student with ID: {Id}", id);
-            return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+            return StatusCode(500, $"An error occurred while processing your student request.{ex.Message}");
         }
     }
 }

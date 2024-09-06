@@ -29,7 +29,7 @@ namespace sms.backend.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while getting all users");
-                return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+                return StatusCode(500, $"An error occurred while processing your user request.{ex.Message}");
             }
         }
 
@@ -50,7 +50,7 @@ namespace sms.backend.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while getting the user with ID: {Id}", id);
-                return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+                return StatusCode(500, $"An error occurred while processing your user  request.{ex.Message}");
             }
         }
 
@@ -67,7 +67,7 @@ namespace sms.backend.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while creating a new user");
-                return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+                return StatusCode(500, $"An error occurred while processing your  user request.{ex.Message}");
             }
         }
 
@@ -88,7 +88,7 @@ namespace sms.backend.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while updating the user with ID: {Id}", id);
-                return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+                return StatusCode(500, $"An error occurred while processing your user  request.{ex.Message}");
             }
         }
 
@@ -111,7 +111,7 @@ namespace sms.backend.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while deleting the user with ID: {Id}", id);
-                return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+                return StatusCode(500, $"An error occurred while processing your user  request.{ex.Message}");
             }
         }
     }

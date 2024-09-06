@@ -12,12 +12,12 @@ namespace sms.backend.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class TimetablesController : ControllerBase
+    public class TimetableController : ControllerBase
     {
         private readonly SchoolContext _context;
-        private readonly ILogger<TimetablesController> _logger;
+        private readonly ILogger<TimetableController> _logger;
 
-        public TimetablesController(SchoolContext context, ILogger<TimetablesController> logger)
+        public TimetableController(SchoolContext context, ILogger<TimetableController> logger)
         {
             _context = context;
             _logger = logger;
@@ -34,7 +34,7 @@ namespace sms.backend.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while getting all timetables");
-                return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+                return StatusCode(500, $"An error occurred while processing your timetable request. {ex.Message}");
             }
         }
 
@@ -55,7 +55,28 @@ namespace sms.backend.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while getting the timetable with ID: {Id}", id);
-                return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+                return StatusCode(500, $"An error occurred while processing your timetable request. {ex.Message}");
+            }
+        }
+
+        [HttpGet("class/{id}")]
+        public async Task<ActionResult<IEnumerable<Timetable>>> GetClassTimetable(int id)
+        {
+            try
+            {
+                _logger.LogInformation("Getting Class timetable with ID: {Id}", id);
+                var timetables = await _context.Timetables.Where(tt => tt.ClassId == id).ToListAsync();
+                if (timetables == null || !timetables.Any())
+                {
+                    _logger.LogWarning("Timetable with Class ID: {Id} not found", id);
+                    return NotFound();
+                }
+                return Ok(timetables);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while getting the class timetable with ID: {Id}", id);
+                return StatusCode(500, $"An error occurred while processing your timetable request. {ex.Message}");
             }
         }
 
@@ -72,7 +93,7 @@ namespace sms.backend.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while creating a new timetable");
-                return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+                return StatusCode(500, $"An error occurred while processing your timetable request. {ex.Message}");
             }
         }
 
@@ -93,7 +114,7 @@ namespace sms.backend.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while updating the timetable with ID: {Id}", id);
-                return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+                return StatusCode(500, $"An error occurred while processing your timetable request. {ex.Message}");
             }
         }
 
@@ -115,7 +136,7 @@ namespace sms.backend.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while deleting the timetable with ID: {Id}", id);
-                return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+                return StatusCode(500, $"An error occurred while processing your timetable request. {ex.Message}");
             }
         }
     }

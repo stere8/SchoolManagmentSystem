@@ -35,7 +35,7 @@ namespace sms.backend.Data
             modelBuilder.Entity<TeacherEnrollment>()
                 .HasKey(e => new { e.StaffId, e.ClassId });
             modelBuilder.Entity<Mark>()
-                .Property(m => m.Value)
+                .Property(m => m.MarkValue)
                 .HasColumnType("decimal(18,2)");
             // Define other relationships and keys as needed
         }
