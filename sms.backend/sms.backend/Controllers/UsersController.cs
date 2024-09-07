@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using sms.backend.Data;
 using sms.backend.Models;
 
 namespace sms.backend.Controllers
 {
+    [Authorize(Roles = "Admin,Teacher,Student,Parent")]
     [ApiController]
     [Route("[controller]")]
     public class UsersController : ControllerBase
