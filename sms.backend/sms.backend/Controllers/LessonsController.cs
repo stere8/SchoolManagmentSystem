@@ -76,7 +76,7 @@ public class LessonsController : ControllerBase
             return StatusCode(500, $"An error occurred while processing your lessons request. {ex.Message}");
         }
     }
-    }
+    
 
 [HttpPost]
     public async Task<ActionResult<Lesson>> PostLesson(Lesson lesson)

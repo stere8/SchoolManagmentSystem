@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using sms.backend.Data;
 
@@ -11,9 +12,11 @@ using sms.backend.Data;
 namespace sms.backend.Migrations
 {
     [DbContext(typeof(SchoolContext))]
-    partial class SchoolContextModelSnapshot : ModelSnapshot
+    [Migration("20240906064845_AddGradeLevelToLesson")]
+    partial class AddGradeLevelToLesson
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
