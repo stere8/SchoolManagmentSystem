@@ -20,8 +20,12 @@ import TeacherEnrollments from './components/TeacherEnrollments';
 import AddEditLesson from './components/AddEditLesson';
 import AddEditAttendance from './components/AddEditAttendance';
 import AddEditMark from './components/AddEditMark';
-import Login from './components/Login';
-import Register from './components/Register';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import ParentBoard from './components/ParentBoard';
+import StudentBoard from './components/StudentBoard';
+import TeacherBoard from './components/TeacherBoard';
+import ProtectedRoute from './components/ProtectedRoute';
 
 // Axios interceptor to add JWT token to Authorization header
 axios.interceptors.request.use(
@@ -50,47 +54,56 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
 
-                {/* Unprotected Routes */}
-                <Route path="/attendance" element={<Attendance />} />
-                <Route path="/attendance/add" element={<AddEditAttendance />} />
-                <Route path="/attendance/edit/:id" element={<AddEditAttendance />} />
+                {/* Protected Routes */}
+                <Route path="/attendance" element={<ProtectedRoute roles={['admin', 'teacher']}><Attendance /></ProtectedRoute>} />
+                <Route path="/attendance/add" element={<ProtectedRoute roles={['admin', 'teacher']}><AddEditAttendance /></ProtectedRoute>} />
+                <Route path="/attendance/edit/:id" element={<ProtectedRoute roles={['admin', 'teacher']}><AddEditAttendance /></ProtectedRoute>} />
 
                 {/* Classes Routes */}
-                <Route path="/classes" element={<Classes />} />
-                <Route path="/classes/:id" element={<ClassDetails />} />
+                <Route path="/classes" element={<ProtectedRoute roles={['admin']}><Classes /></ProtectedRoute>} />
+                <Route path="/classes/:id" element={<ProtectedRoute roles={['admin']}><ClassDetails /></ProtectedRoute>} />
 
                 {/* Enrollment Routes */}
-                <Route path="/enrollments" element={<Enrollments />} />
-                <Route path="/enrollments/add" element={<AddEditEnrollment />} />
-                <Route path="/enrollments/edit/:id" element={<AddEditEnrollment />} />
+                <Route path="/enrollments" element={<ProtectedRoute roles={['admin']}><Enrollments /></ProtectedRoute>} />
+                <Route path="/enrollments/add" element={<ProtectedRoute roles={['admin']}><AddEditEnrollment /></ProtectedRoute>} />
+                <Route path="/enrollments/edit/:id" element={<ProtectedRoute roles={['admin']}><AddEditEnrollment /></ProtectedRoute>} />
 
                 {/* Teacher Enrollment Routes */}
-                <Route path="/teacher-enrollments" element={<TeacherEnrollments />} />
-                <Route path="/teacher-enrollments/add" element={<AddEditTeacherEnrollment />} />
-                <Route path="/teacher-enrollments/edit/:id" element={<AddEditTeacherEnrollment />} />
+                <Route path="/teacher-enrollments" element={<ProtectedRoute roles={['admin']}><TeacherEnrollments /></ProtectedRoute>} />
+                <Route path="/teacher-enrollments/add" element={<ProtectedRoute roles={['admin']}><AddEditTeacherEnrollment /></ProtectedRoute>} />
+                <Route path="/teacher-enrollments/edit/:id" element={<ProtectedRoute roles={['admin']}><AddEditTeacherEnrollment /></ProtectedRoute>} />
 
                 {/* Lessons Routes */}
-                <Route path="/lessons" element={<Lessons />} />
-                <Route path="/lessons/add" element={<AddEditLesson />} />
-                <Route path="/lessons/edit/:id" element={<AddEditLesson />} />
+                <Route path="/lessons" element={<ProtectedRoute roles={['admin']}><Lessons /></ProtectedRoute>} />
+                <Route path="/lessons/add" element={<ProtectedRoute roles={['admin']}><AddEditLesson /></ProtectedRoute>} />
+                <Route path="/lessons/edit/:id" element={<ProtectedRoute roles={['admin']}><AddEditLesson /></ProtectedRoute>} />
 
                 {/* Marks Routes */}
-                <Route path="/marks" element={<Marks />} />
-                <Route path="/marks/add" element={<AddEditMark />} />
-                <Route path="/marks/edit/:id" element={<AddEditMark />} />
+                <Route path="/marks" element={<ProtectedRoute roles={['admin', 'teacher']}><Marks /></ProtectedRoute>} />
+                <Route path="/marks/add" element={<ProtectedRoute roles={['admin', 'teacher']}><AddEditMark /></ProtectedRoute>} />
+                <Route path="/marks/edit/:id" element={<ProtectedRoute roles={['admin', 'teacher']}><AddEditMark /></ProtectedRoute>} />
 
                 {/* Staff Routes */}
-                <Route path="/staff" element={<Staff />} />
-                <Route path="/staff/add" element={<AddEditStaff />} />
-                <Route path="/staff/edit/:id" element={<AddEditStaff />} />
+                <Route path="/staff" element={<ProtectedRoute roles={['admin']}><Staff /></ProtectedRoute>} />
+                <Route path="/staff/add" element={<ProtectedRoute roles={['admin']}><AddEditStaff /></ProtectedRoute>} />
+                <Route path="/staff/edit/:id" element={<ProtectedRoute roles={['admin']}><AddEditStaff /></ProtectedRoute>} />
 
                 {/* Students Routes */}
-                <Route path="/students" element={<Students />} />
-                <Route path="/students/add" element={<AddEditStudent />} />
-                <Route path="/students/edit/:id" element={<AddEditStudent />} />
+                <Route path="/students" element={<ProtectedRoute roles={['admin']}><Students /></ProtectedRoute>} />
+                <Route path="/students/add" element={<ProtectedRoute roles={['admin']}><AddEditStudent /></ProtectedRoute>} />
+                <Route path="/students/edit/:id" element={<ProtectedRoute roles={['admin']}><AddEditStudent /></ProtectedRoute>} />
 
                 {/* Timetable Route */}
-                <Route path="/timetable" element={<Timetable />} />
+                <Route path="/timetable" element={<ProtectedRoute roles={['admin']}><Timetable /></ProtectedRoute>} />
+
+                {/* Parent Board Route */}
+                <Route path="/parent-board" element={<ProtectedRoute roles={['parent']}><ParentBoard /></ProtectedRoute>} />
+
+                {/* Student Board Route */}
+                <Route path="/student-board" element={<ProtectedRoute roles={['student']}><StudentBoard /></ProtectedRoute>} />
+
+                {/* Teacher Board Route */}
+                <Route path="/teacher-board" element={<ProtectedRoute roles={['teacher']}><TeacherBoard /></ProtectedRoute>} />
 
                 {/* Default Route */}
                 <Route path="/" element={isAuthenticated() ? <Navigate to="/classes" /> : <Navigate to="/login" />} />

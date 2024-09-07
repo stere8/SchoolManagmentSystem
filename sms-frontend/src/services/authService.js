@@ -3,9 +3,10 @@ import { BASE_URL } from '../settings';
 
 const login = async (email, password) => {
     const response = await axios.post(`${BASE_URL}/auth/login`, { email, password });
-    if (response.data.token) {
-        localStorage.setItem('user', JSON.stringify(response.data));
-    }
+   localStorage.setItem('user', JSON.stringify({
+            token: response.data.token,
+            role: response.data.role
+        }));
     return response.data;
 };
 

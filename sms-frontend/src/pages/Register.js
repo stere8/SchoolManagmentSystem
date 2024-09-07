@@ -80,6 +80,7 @@ const Register = () => {
                         <option value="student">Student</option>
                         <option value="teacher">Teacher</option>
                         <option value="admin">Admin</option>
+                        <option value="Parent">Parent</option>
                     </select>
                 </div>
                 <button type="submit" className="register-button">Register</button>

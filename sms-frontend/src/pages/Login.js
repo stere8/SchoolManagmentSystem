@@ -11,9 +11,20 @@ const Login = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            await authService.login(email, password);
+            const response = await authService.login(email, password);
             console.log('Login successful'); // Log success message
-            navigate('/'); // Navigate to home page
+            const role = response.role;
+            if (role === 'Student') {
+                navigate('/student-dashboard');
+            } else if (role === 'Teacher') {
+                navigate('/teacher-dashboard');
+            } else if (role === 'Parent') {
+                navigate('/parent-dashboard');
+            } else if (role === 'admin') {
+                navigate('/admin-dashboard');
+            } else {
+                navigate('/classes'); // Default redirection
+            }
         } catch (error) {
             console.error('Login failed', error);
         }
