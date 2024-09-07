@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
-import { Table, Button } from 'react-bootstrap';
-import { BASE_URL } from '../settings';
+import {Link} from 'react-router-dom';
+import {Table, Button} from 'react-bootstrap';
+import {BASE_URL} from '../settings';
 
 const Attendance = () => {
     const [attendance, setAttendance] = useState([]);
@@ -12,9 +12,22 @@ const Attendance = () => {
     useEffect(() => {
         const fetchAttendanceData = async () => {
             try {
-                const attendanceResponse = await axios.get(`${BASE_URL}/attendance`);
-                const studentsResponse = await axios.get(`${BASE_URL}/students`);
-                const lessonsResponse = await axios.get(`${BASE_URL}/lessons`);
+                console.log("Getting attendance")
+                const url = `${BASE_URL}/attendance`
+                console.log(url)
+                const attendanceResponse = await axios.get(url);
+                console.log("RECORDS")
+                console.log(attendanceResponse.data);
+                const url1 = `${BASE_URL}/students`
+                console.log(url1)
+                const studentsResponse = await axios.get(url1);
+                console.log("STUDENTS")
+                console.log(studentsResponse.data);
+                const url2 = `${BASE_URL}/students`
+                console.log(url2)
+                const lessonsResponse = await axios.get(url2);
+                console.log("LESSONS")
+                console.log(lessonsResponse.data);
 
                 setAttendance(attendanceResponse.data);
                 setStudents(studentsResponse.data);
@@ -53,27 +66,29 @@ const Attendance = () => {
             <Button as={Link} to="/attendance/add" variant="primary">Add Attendance Record</Button>
             <Table striped bordered hover>
                 <thead>
-                    <tr>
-                        <th>Student</th>
-                        <th>Lesson</th>
-                        <th>Date</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
+                <tr>
+                    <th>Student</th>
+                    <th>Lesson</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
                 </thead>
                 <tbody>
-                    {attendance.map(record => (
-                        <tr key={record.attendanceId}>
-                            <td>{getStudentNameById(record.studentId)}</td>
-                            <td>{getLessonNameById(record.lessonId)}</td>
-                            <td>{formatDate(record.date)}</td>
-                            <td>{record.status}</td>
-                            <td>
-                                <Button as={Link} to={`/attendance/edit/${record.attendanceId}`} variant="warning">Edit</Button>
-                                <Button onClick={() => deleteAttendance(record.attendanceId)} variant="danger">Delete</Button>
-                            </td>
-                        </tr>
-                    ))}
+                {attendance.map(record => (
+                    <tr key={record.attendanceId}>
+                        <td>{getStudentNameById(record.studentId)}</td>
+                        <td>{getLessonNameById(record.lessonId)}</td>
+                        <td>{formatDate(record.date)}</td>
+                        <td>{record.status}</td>
+                        <td>
+                            <Button as={Link} to={`/attendance/edit/${record.attendanceId}`}
+                                    variant="warning">Edit</Button>
+                            <Button onClick={() => deleteAttendance(record.attendanceId)}
+                                    variant="danger">Delete</Button>
+                        </td>
+                    </tr>
+                ))}
                 </tbody>
             </Table>
         </div>

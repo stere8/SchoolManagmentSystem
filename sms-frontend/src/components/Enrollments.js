@@ -10,7 +10,9 @@ const Enrollments = () => {
     useEffect(() => {
         const fetchEnrollments = async () => {
             try {
-                const link = `${BASE_URL}/enrollments`
+                const link = `${BASE_URL}/enrollments/all`
+                console.log('all enrollmewnts');
+                console.log(link)
                 const response = await axios.get(link);
                 setEnrollments(response.data);
             } catch (error) {
