@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("[controller]")]
 public class EnrollmentsController : ControllerBase
 {
     private readonly SchoolContext _context;
@@ -55,7 +55,7 @@ public class EnrollmentsController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while getting all enrollments");
-            return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+            return StatusCode(500, $"An error occurred while processing your enrollment request.{ex.Message}");
         }
     }
 
@@ -77,7 +77,7 @@ public class EnrollmentsController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while getting the enrollment with ID: {Id}", id);
-            return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+            return StatusCode(500, $"An error occurred while processing your enrollment request.{ex.Message}");
         }
     }
 
@@ -99,7 +99,7 @@ public class EnrollmentsController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while getting the enrollment for Student ID: {StudentId} and Class ID: {ClassId}", studentId, classId);
-            return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+            return StatusCode(500, $"An error occurred while processing your enrollment request.{ex.Message}");
         }
     }
 
@@ -122,7 +122,7 @@ public class EnrollmentsController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while creating a new enrollment");
-            return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+            return StatusCode(500, $"An error occurred while processing your enrollment request.{ex.Message}");
         }
     }
 
@@ -165,7 +165,7 @@ public class EnrollmentsController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while updating the enrollment with ID: {Id}", id);
-            return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+            return StatusCode(500, $"An error occurred while processing your enrollment request.{ex.Message}");
         }
     }
 
@@ -188,7 +188,7 @@ public class EnrollmentsController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while deleting the enrollment for Student ID: {StudentId} and Class ID: {ClassId}", studentId, classId);
-            return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+            return StatusCode(500, $"An error occurred while processing your enrollment request.{ex.Message}");
         }
     }
 }

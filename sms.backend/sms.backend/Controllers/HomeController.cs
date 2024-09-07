@@ -52,7 +52,7 @@ namespace sms.backend.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while getting the student timetable");
-                return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+                return StatusCode(500, $"An error occurred while processing your home request.{ex.Message}");
             }
         }
 
@@ -73,7 +73,7 @@ namespace sms.backend.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while getting the student grades");
-                return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+                return StatusCode(500, $"An error occurred while processing your home request.{ex.Message}");
             }
         }
 
@@ -94,7 +94,7 @@ namespace sms.backend.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while getting the student attendance");
-                return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+                return StatusCode(500, $"An error occurred while processing your home request.{ex.Message}");
             }
         }
     }

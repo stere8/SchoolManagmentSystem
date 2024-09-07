@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Authorization;
 
 [ApiController]
 [Route("[controller]")]
-[Authorize]
 public class AttendanceController : ControllerBase
 {
     private readonly SchoolContext _context;
@@ -22,7 +21,7 @@ public class AttendanceController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Attendance>>> sGetAttendance()
+    public async Task<ActionResult<IEnumerable<Attendance>>> GetAttendance()
     {
         try
         {
@@ -32,7 +31,8 @@ public class AttendanceController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while getting all attendance records");
-            return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+
+            return StatusCode(500, $"An error occurred while processing your attendance request.{ex.Message}");
         }
     }
 
@@ -53,7 +53,7 @@ public class AttendanceController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while getting the attendance record with ID: {Id}", id);
-            return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+            return StatusCode(500, $"An error occurred while processing your attendance request.{ex.Message}");
         }
     }
 
@@ -70,7 +70,7 @@ public class AttendanceController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while creating a new attendance record");
-            return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+            return StatusCode(500, $"An error occurred while processing your attendance request.{ex.Message}");
         }
     }
 
@@ -112,7 +112,7 @@ public class AttendanceController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while deleting the attendance record with ID: {Id}", id);
-            return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+            return StatusCode(500, $"An error occurred while processing your attendance request.{ex.Message}");
         }
     }
 }

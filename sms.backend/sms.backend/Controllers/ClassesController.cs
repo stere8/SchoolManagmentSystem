@@ -40,7 +40,7 @@ public class ClassesController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while getting all classes");
-            return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+            return StatusCode(500, $"An error occurred while processing your classes request.{ex.Message}");
         }
     }
 
@@ -62,7 +62,7 @@ public class ClassesController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while getting the class with ID: {Id}", id);
-            return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+            return StatusCode(500, $"An error occurred while processing your classes request.{ex.Message}");
         }
     }
 

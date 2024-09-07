@@ -36,7 +36,7 @@ namespace sms.backend.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while getting classes for teacher with ID: {Id}", id);
-                return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+                return StatusCode(500, $"An error occurred while processing your teacher request.{ex.Message}");
             }
         }
 
@@ -59,7 +59,7 @@ namespace sms.backend.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while adding class for teacher with ID: {Id}", id);
-                return StatusCode(500, $"An error occurred while processing your request.{ex.Message}");
+                return StatusCode(500, $"An error occurred while processing your teacher request.{ex.Message}");
             }
         }
     }
