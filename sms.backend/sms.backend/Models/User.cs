@@ -11,7 +11,9 @@ namespace sms.backend.Models
         public UserRole Role { get; set; }
         public int? TeacherId { get; set; }
         public int? StudentId { get; set; }
+        public int? ParentId { get; set; } // Add ParentId
         public virtual Teacher Teacher { get; set; }
         public virtual Student Student { get; set; }
+        public virtual Parent Parent { get; set; } // Add Parent
     }
 }
