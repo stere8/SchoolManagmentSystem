@@ -17,15 +17,12 @@ const NavigationBar = () => {
         if (user) {
             switch (user.role) {
                 case 'parent':
-                    console.log("Parent");
                     navigate('/parent-board');
                     break;
                 case 'student':
-                    console.log("student");
                     navigate('/student-board');
                     break;
                 case 'teacher':
-                    console.log("teacher");
                     navigate('/teacher-board');
                     break;
                 default:
