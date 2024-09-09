@@ -4,6 +4,7 @@ using sms.backend.Data;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using sms.backend.Models;
 
 [ApiController]
 [Route("[controller]")]

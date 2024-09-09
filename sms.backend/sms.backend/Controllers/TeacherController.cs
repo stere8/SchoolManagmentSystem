@@ -25,13 +25,24 @@ namespace sms.backend.Controllers
             try
             {
                 _logger.LogInformation("Getting classes for teacher with ID: {Id}", id);
-                var teacher = await _context.Teachers.Include(t => t.Classes).FirstOrDefaultAsync(t => t.TeacherId == id);
+
+                var teacher = await _context.Teachers.FirstOrDefaultAsync(t => t.UserId == id);
                 if (teacher == null)
                 {
                     _logger.LogWarning("Teacher with ID: {Id} not found", id);
                     return NotFound();
                 }
-                return Ok(teacher.Classes);
+
+                List<int> classesIdList = await _context.TeacherEnrollments
+                    .Where(e => e.StaffId == id)
+                    .Select(res => res.ClassId).ToListAsync();
+                List<Class> classes = await _context.Classes.Where(c => classesIdList.Contains(c.ClassId)).ToListAsync();
+                if (classes == null)
+                {
+                    _logger.LogWarning("Teacher with ID: {Id} not found has no classes", id);
+                    return NotFound();
+                }
+                return Ok(classes);
             }
             catch (Exception ex)
             {
@@ -52,7 +63,7 @@ namespace sms.backend.Controllers
                     _logger.LogWarning("Teacher with ID: {Id} not found", id);
                     return NotFound();
                 }
-                teacher.Classes.Add(classItem);
+                _context.TeacherEnrollments.Add(new TeacherEnrollment(){ClassId = classItem.ClassId,StaffId = id,les});
                 await _context.SaveChangesAsync();
                 return CreatedAtAction(nameof(GetClasses), new { id = teacher.TeacherId }, classItem);
             }
