@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿// /sms.backend/sms.backend/Controllers/UsersController.cs
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using sms.backend.Data;
 using sms.backend.Models;
+using System.Security.Claims;
 
 namespace sms.backend.Controllers
 {
@@ -52,7 +54,7 @@ namespace sms.backend.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while getting the user with ID: {Id}", id);
-                return StatusCode(500, $"An error occurred while processing your user  request.{ex.Message}");
+                return StatusCode(500, $"An error occurred while processing your user request.{ex.Message}");
             }
         }
 
@@ -69,7 +71,7 @@ namespace sms.backend.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while creating a new user");
-                return StatusCode(500, $"An error occurred while processing your  user request.{ex.Message}");
+                return StatusCode(500, $"An error occurred while processing your user request.{ex.Message}");
             }
         }
 
@@ -90,7 +92,7 @@ namespace sms.backend.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while updating the user with ID: {Id}", id);
-                return StatusCode(500, $"An error occurred while processing your user  request.{ex.Message}");
+                return StatusCode(500, $"An error occurred while processing your user request.{ex.Message}");
             }
         }
 
@@ -113,8 +115,97 @@ namespace sms.backend.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while deleting the user with ID: {Id}", id);
-                return StatusCode(500, $"An error occurred while processing your user  request.{ex.Message}");
+                return StatusCode(500, $"An error occurred while processing your user request.{ex.Message}");
             }
         }
+
+        [HttpPost("assign")]
+        public async Task<IActionResult> AssignUserToEntity([FromBody] UserAssignmentRequest request)
+        {
+            try
+            {
+                var user = await _context.Users.FindAsync(request.UserId);
+                if (user == null)
+                {
+                    return NotFound("User not found");
+                }
+
+                switch (user.Role)
+                {
+                    case UserRole.Teacher:
+                        var teacher = await _context.Teachers.FindAsync(request.EntityId);
+                        if (teacher == null)
+                        {
+                            return NotFound("Teacher not found");
+                        }
+                        user.TeacherId = teacher.TeacherId;
+                        teacher.UserId = user.UserId;
+                        break;
+                    case UserRole.Student:
+                        var student = await _context.Students.FindAsync(request.EntityId);
+                        if (student == null)
+                        {
+                            return NotFound("Student not found");
+                        }
+                        user.StudentId = student.StudentId;
+                        student.UserId = user.UserId;
+                        break;
+                    default:
+                        return BadRequest("Invalid role for assignment");
+                }
+
+                await _context.SaveChangesAsync();
+                return Ok("User assigned successfully");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while assigning the user");
+                return StatusCode(500, $"An error occurred while processing your request: {ex.Message}");
+            }
+        }
+
+        [HttpGet("current")]
+        [Authorize]
+        public async Task<IActionResult> GetCurrentUserInfo()
+        {
+            try
+            {
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var user = await _context.Users
+                    .Include(u => u.Teacher)
+                    .ThenInclude(t => t.Classes)
+                    .Include(u => u.Student)
+                    .ThenInclude(s => s.Classes)
+                    .FirstOrDefaultAsync(u => u.Id == userId);
+
+                if (user == null)
+                {
+                    return NotFound("User not found");
+                }
+
+                var userInfo = new
+                {
+                    user.Username,
+                    user.Email,
+                    user.Role,
+                    Classes = user.Role == UserRole.Teacher
+                        ? user.Teacher?.Classes.Select(c => new { c.ClassId, c.Name })
+                        : user.Student?.Classes.Select(c => new { c.ClassId, c.Name })
+                };
+
+                return Ok(userInfo);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while getting current user info");
+                return StatusCode(500, $"An error occurred while processing your request: {ex.Message}");
+            }
+        }
+    }
+
+    public class UserAssignmentRequest
+    {
+        public int UserId { get; set; }
+        public int EntityId { get; set; }
     }
 }
