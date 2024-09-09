@@ -69,6 +69,9 @@ const NavigationBar = () => {
                             <LinkContainer to="/timetable">
                                 <Nav.Link>Timetable</Nav.Link>
                             </LinkContainer>
+                            <LinkContainer to="/user-assignment">
+                                <Nav.Link>User Assignment</Nav.Link>
+                            </LinkContainer>
                         </>
                     )}
                     {user && user.role === 'parent' && (
@@ -95,9 +98,11 @@ const NavigationBar = () => {
                         </>
                     )}
                 </Nav>
-                <Nav>
-                    <Nav.Link onClick={handleLogout}>Logout</Nav.Link>
-                </Nav>
+                {user && (
+                    <Nav>
+                        <Nav.Link onClick={handleLogout}>Logout</Nav.Link>
+                    </Nav>
+                )}
             </Navbar.Collapse>
         </Navbar>
     );
