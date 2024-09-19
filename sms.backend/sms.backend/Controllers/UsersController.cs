@@ -1,49 +1,68 @@
-﻿// /sms.backend/sms.backend/Controllers/UsersController.cs
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using sms.backend.Data;
 using sms.backend.Models;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
 
 namespace sms.backend.Controllers
 {
-    [Authorize(Roles = "Admin,Teacher,Student,Parent")]
     [ApiController]
     [Route("[controller]")]
     public class UsersController : ControllerBase
     {
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly SchoolContext _context;
         private readonly ILogger<UsersController> _logger;
 
-        public UsersController(SchoolContext context, ILogger<UsersController> logger)
+        public UsersController(SchoolContext context, ILogger<UsersController> logger, UserManager<ApplicationUser> userManager)
         {
+            _userManager = userManager;
             _context = context;
             _logger = logger;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<ApplicationUser>>> GetUsers()
         {
             try
             {
                 _logger.LogInformation("Getting all users");
-                return await _context.Users.ToListAsync();
+                var users = await _userManager.Users.ToListAsync();
+                return Ok(users);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while getting all users");
-                return StatusCode(500, $"An error occurred while processing your user request.{ex.Message}");
+                return StatusCode(500, $"An error occurred while processing your user request: {ex.Message}");
+            }
+        }
+
+        [HttpGet("role/{role}")]
+        public async Task<ActionResult<IEnumerable<ApplicationUser>>> GetUsers(string role)
+        
+        {
+            try
+            {
+                _logger.LogInformation("Getting all users");
+                var users = await _userManager.Users.Where(user => user.Role == role).ToListAsync();
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while getting all users");
+                return StatusCode(500, $"An error occurred while processing your user request: {ex.Message}");
             }
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(int id)
+        public async Task<ActionResult<ApplicationUser>> GetUser(string id)
         {
             try
             {
                 _logger.LogInformation("Getting user with ID: {Id}", id);
-                var user = await _context.Users.FindAsync(id);
+                var user = await _userManager.FindByIdAsync(id);
                 if (user == null)
                 {
                     _logger.LogWarning("User with ID: {Id} not found", id);
@@ -119,12 +138,11 @@ namespace sms.backend.Controllers
             }
         }
 
-        [HttpPost("assign")]
         public async Task<IActionResult> AssignUserToEntity([FromBody] UserAssignmentRequest request)
         {
             try
             {
-                var user = await _context.Users.FindAsync(request.UserId);
+                var user = await _userManager.FindByIdAsync(request.EntityId);
                 if (user == null)
                 {
                     return NotFound("User not found");
@@ -132,28 +150,37 @@ namespace sms.backend.Controllers
 
                 switch (user.Role)
                 {
-                    case UserRole.Teacher:
-                        var teacher = await _context.Teachers.FindAsync(request.EntityId);
+                    case "teacher":
+                        var teacher = await _context.Staff.FindAsync(request.UserId);
                         if (teacher == null)
                         {
                             return NotFound("Teacher not found");
                         }
-                        user.TeacherId = teacher.TeacherId;
-                        teacher.UserId = user.UserId;
                         break;
-                    case UserRole.Student:
-                        var student = await _context.Students.FindAsync(request.EntityId);
+                    case "student":
+                        var student = await _context.Students.FindAsync(request.UserId);
                         if (student == null)
                         {
                             return NotFound("Student not found");
                         }
-                        user.StudentId = student.StudentId;
-                        student.UserId = user.UserId;
                         break;
                     default:
                         return BadRequest("Invalid role for assignment");
                 }
 
+                // Check if the user or entity already exists in the Users table
+                var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.UserId == request.UserId || u.EntityId == request.EntityId);
+                if (existingUser != null)
+                {
+                    return BadRequest("User or entity is already assigned");
+                }
+
+                User newUser = new User()
+                {
+                    EntityId = request.EntityId,
+                    UserId = request.UserId
+                };
+                _context.Users.Add(newUser);
                 await _context.SaveChangesAsync();
                 return Ok("User assigned successfully");
             }
@@ -165,32 +192,45 @@ namespace sms.backend.Controllers
         }
 
         [HttpGet("current")]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> GetCurrentUserInfo()
         {
             try
             {
                 var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                var user = await _context.Users
-                    .Include(u => u.Teacher)
-                    .ThenInclude(t => t.Classes)
-                    .Include(u => u.Student)
-                    .ThenInclude(s => s.Classes)
-                    .FirstOrDefaultAsync(u => u.Id == userId);
+                var userEntity = await _userManager.FindByIdAsync(userId);
+                var user = await _context.Users.FirstAsync(u => u.EntityId == userEntity.Id);
 
                 if (user == null)
                 {
                     return NotFound("User not found");
                 }
 
+                var classesID = new List<int>();
+
+                if (userEntity.Role.ToLower() == "teacher")
+                {
+                    classesID = await _context.TeacherEnrollments
+                        .Where(e => e.StaffId == user.UserId)
+                        .Select(e => e.ClassId)
+                        .ToListAsync();
+                }
+                else if (userEntity.Role.ToLower() == "student")
+                {
+                    classesID = await _context.Enrollments
+                        .Where(e => e.StudentId == user.UserId)
+                        .Select(e => e.ClassId)
+                        .ToListAsync();
+                }
+
+                var classes = await _context.Classes.Where(c => classesID.Contains(c.ClassId)).ToListAsync();
+
                 var userInfo = new
                 {
-                    user.Username,
-                    user.Email,
-                    user.Role,
-                    Classes = user.Role == UserRole.Teacher
-                        ? user.Teacher?.Classes.Select(c => new { c.ClassId, c.Name })
-                        : user.Student?.Classes.Select(c => new { c.ClassId, c.Name })
+                    userEntity.UserName,
+                    userEntity.Email,
+                    userEntity.Role,
+                    Classes = classes.Select(c => new { c.ClassId, c.Name })
                 };
 
                 return Ok(userInfo);
@@ -206,6 +246,6 @@ namespace sms.backend.Controllers
     public class UserAssignmentRequest
     {
         public int UserId { get; set; }
-        public int EntityId { get; set; }
+        public string EntityId { get; set; }
     }
 }
