@@ -63,7 +63,7 @@ namespace sms.backend.Controllers
                     _logger.LogWarning("Teacher with ID: {Id} not found", id);
                     return NotFound();
                 }
-                _context.TeacherEnrollments.Add(new TeacherEnrollment(){ClassId = classItem.ClassId,StaffId = id,les});
+                _context.TeacherEnrollments.Add(new TeacherEnrollment(){ClassId = classItem.ClassId,StaffId = id,LessonId = 0});
                 await _context.SaveChangesAsync();
                 return CreatedAtAction(nameof(GetClasses), new { id = teacher.TeacherId }, classItem);
             }

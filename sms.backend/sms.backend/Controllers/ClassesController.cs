@@ -66,35 +66,37 @@ public class ClassesController : ControllerBase
         }
     }
 
+
     private ClassesView Fill(int classID)
     {
-        List<int> studentsId = _context.Enrollments
+        var studentsId = _context.Enrollments
             .Where(e => e.ClassId == classID)
             .Select(e => e.StudentId)
             .ToList();
 
-        List<Student> students = _context.Students
+        var students = _context.Students
             .Where(student => studentsId.Contains(student.StudentId))
             .ToList();
 
-        List<int> teacherIds = _context.TeacherEnrollments
+        var teacherIds = _context.TeacherEnrollments
             .Where(e => e.ClassId == classID)
             .Select(e => e.StaffId)
             .ToList();
 
-        List<Staff> classTeachers = _context.Staff
+        var classTeachers = _context.Staff
             .Where(teacher => teacherIds.Contains(teacher.StaffId))
             .ToList();
-        Class? viewdClass = _context.Classes.FirstOrDefault(classes => classes != null && classes.ClassId == classID);
 
-        List<TimetableView> timetable = GetTimetableForClass(classID);
+        var viewedClass = _context.Classes.FirstOrDefault(classes => classes != null && classes.ClassId == classID);
+
+        var timetable = GetTimetableForClass(classID);
 
         return new ClassesView()
         {
-            ClassStudents = students,
-            ClassTeachers = classTeachers,
-            ViewedClass = viewdClass,
-            ClassTimetable = timetable
+            ClassStudents = students ?? new List<Student>(),
+            ClassTeachers = classTeachers ?? new List<Staff>(),
+            ViewedClass = viewedClass ?? new Class(),
+            ClassTimetable = timetable ?? new List<TimetableView>()
         };
     }
 

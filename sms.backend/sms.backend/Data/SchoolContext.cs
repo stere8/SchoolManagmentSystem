@@ -10,8 +10,8 @@ namespace sms.backend.Data
         public SchoolContext(DbContextOptions<SchoolContext> options) : base(options) { }
 
         public DbSet<Student> Students { get; set; }
-        public DbSet<Staff?> Staff { get; set; }
-        public DbSet<Class?> Classes { get; set; }
+        public DbSet<Staff> Staff { get; set; }
+        public DbSet<Class> Classes { get; set; }
         public DbSet<Lesson> Lessons { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
         public DbSet<Mark> Marks { get; set; }
