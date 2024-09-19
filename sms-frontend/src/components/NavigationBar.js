@@ -72,6 +72,9 @@ const NavigationBar = () => {
                             <LinkContainer to="/user-assignment">
                                 <Nav.Link>User Assignment</Nav.Link>
                             </LinkContainer>
+                            <LinkContainer to="/assign-role">
+                                <Nav.Link>Assign Role</Nav.Link>
+                            </LinkContainer>
                         </>
                     )}
                     {user && user.role === 'parent' && (

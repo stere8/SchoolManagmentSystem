@@ -26,6 +26,7 @@ import ParentBoard from './components/ParentBoard';
 import StudentBoard from './components/StudentBoard';
 import TeacherBoard from './components/TeacherBoard';
 import ProtectedRoute from './components/ProtectedRoute';
+import UserAssignment from './components/UserAssignment';
 
 // Axios interceptor to add JWT token to Authorization header
 axios.interceptors.request.use(
@@ -104,6 +105,9 @@ function App() {
 
                 {/* Teacher Board Route */}
                 <Route path="/teacher-board" element={<ProtectedRoute roles={['teacher']}><TeacherBoard /></ProtectedRoute>} />
+
+                {/* User Assignment Route */}
+                <Route path="/user-assignment" element={<ProtectedRoute roles={['admin']}><UserAssignment /></ProtectedRoute>} />
 
                 {/* Default Route */}
                 <Route path="/" element={isAuthenticated() ? <Navigate to="/classes" /> : <Navigate to="/login" />} />
