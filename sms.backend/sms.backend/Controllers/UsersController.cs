@@ -41,7 +41,7 @@ namespace sms.backend.Controllers
 
         [HttpGet("role/{role}")]
         public async Task<ActionResult<IEnumerable<ApplicationUser>>> GetUsers(string role)
-        
+
         {
             try
             {
@@ -198,6 +198,10 @@ namespace sms.backend.Controllers
             try
             {
                 var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (userId != null)
+                {
+                    return NotFound("User not found");
+                }
                 var userEntity = await _userManager.FindByIdAsync(userId);
                 var user = await _context.Users.FirstAsync(u => u.EntityId == userEntity.Id);
 
@@ -247,5 +251,11 @@ namespace sms.backend.Controllers
     {
         public int UserId { get; set; }
         public string EntityId { get; set; }
+    }
+
+    public class UserInfoView
+    {
+        public int UserId { get; set; }
+        public string Username { get; set; }
     }
 }

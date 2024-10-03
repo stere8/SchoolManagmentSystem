@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, {useState} from 'react';
+import {useNavigate, Link} from 'react-router-dom';
 import authService from '../services/authService';
 import '../Styles/Login.css'; // Ensure this path matches your project structure
 
@@ -11,8 +11,9 @@ const Login = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const response = await authService.login(email, password);
-            console.log('Login successful'); // Log success message
+            const response = await authService.login(email, password).th;
+
+
             const role = response.role;
             if (role === 'Student') {
                 navigate('/student-dashboard');

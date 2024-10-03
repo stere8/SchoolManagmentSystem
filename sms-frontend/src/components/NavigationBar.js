@@ -1,8 +1,8 @@
 import React from 'react';
-import { Navbar, Nav } from 'react-bootstrap';
-import { LinkContainer } from 'react-router-bootstrap';
+import {Navbar, Nav} from 'react-bootstrap';
+import {LinkContainer} from 'react-router-bootstrap';
 import authService from '../services/authService';
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 
 const NavigationBar = () => {
     const navigate = useNavigate();
@@ -36,7 +36,7 @@ const NavigationBar = () => {
     return (
         <Navbar bg="dark" variant="dark" expand="lg">
             <Navbar.Brand>School Management System</Navbar.Brand>
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
+            <Navbar.Toggle aria-controls="basic-navbar-nav"/>
             <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="mr-auto">
                     <Nav.Link onClick={handleHome}>Home</Nav.Link>
@@ -101,6 +101,17 @@ const NavigationBar = () => {
                         </>
                     )}
                 </Nav>
+                {user && (
+                    <Nav>
+                        <Nav.Item>
+                            <span className="navbar-text">
+                                {user.name} ({user.role})
+                            </span>
+                        </Nav.Item>
+                        <Nav.Link onClick={handleLogout}>Logout</Nav.Link>
+                    </Nav>
+                )}
+
                 {user && (
                     <Nav>
                         <Nav.Link onClick={handleLogout}>Logout</Nav.Link>
