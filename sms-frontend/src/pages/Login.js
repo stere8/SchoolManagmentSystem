@@ -8,33 +8,36 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
 
-    const handleLogin = async (e) => {
-        e.preventDefault();
-        try {
-            const response = await authService.login(email, password);
-            const role = response.role;
+   const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+        const response = await authService.login(email, password);
+        const { token, role, details } = response; // Fixed: Changed "data" to "response"
 
-            switch(role) {
-                case 'Student':
-                    navigate('/student-dashboard');
-                    break;
-                case 'Teacher':
-                    navigate('/teacher-dashboard');
-                    break;
-                case 'Parent':
-                    navigate('/parent-dashboard');
-                    break;
-                case 'admin':
-                    navigate('/admin-dashboard');
-                    break;
-                default:
-                    navigate('/classes'); // Default redirection
-                    break;
-            }
-        } catch (error) {
-            console.error('Login failed', error);
+        localStorage.setItem('details', JSON.stringify(details));
+
+        switch (role.toLowerCase()) {
+            case 'student':
+                navigate('/student-dashboard');
+                break;
+            case 'teacher':
+                navigate('/teacher-board');
+                break;
+            case 'parent':
+                navigate('/parent-dashboard');
+                break;
+            case 'admin':
+                navigate('/admin-dashboard');
+                break;
+            default:
+                navigate('/classes'); // Default redirection
+                break;
         }
-    };
+    } catch (error) {
+        console.error('Login failed', error);
+    }
+};
+
 
     return (
         <div className="login-container">

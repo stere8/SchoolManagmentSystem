@@ -11,7 +11,7 @@ const login = async (email, password) => {
         return response.data;
     } catch (error) {
         console.error('Login failed. Auth Service:', error);
-        throw error; // rethrow the error if you want it to propagate
+        throw error.response ? error.response.data : error.message;
     }
 };
 

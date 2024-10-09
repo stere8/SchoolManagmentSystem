@@ -40,7 +40,7 @@ const AddEditTeacherEnrollment = () => {
 
     const handleSubmit = event => {
         event.preventDefault();
-        const enrollment = { staffId: teacherId, classId: classId, lessonId: lessonId,TeacherEnrollmentId : id };
+        const enrollment = { staffId: teacherId, classId: classId, lessonId: lessonId, TeacherEnrollmentId: id };
 
         if (id && id !== '0') {
             axios.put(`${BASE_URL}/teacherenrollments/${id}`, enrollment)
@@ -59,7 +59,7 @@ const AddEditTeacherEnrollment = () => {
             <Form onSubmit={handleSubmit}>
                 <Form.Group controlId="teacherSelect">
                     <Form.Label>Teacher</Form.Label>
-                    <Form.Control as="select" value={teacherId} onChange={e => setTeacherId(e.target.value)} required>
+                    <Form.Control as="select" value={teacherId} onChange={e => setTeacherId(e.target.value)} required disabled={id && id !== '0'}>
                         <option value="">Select a teacher</option>
                         {teachers.map(teacher => (
                             <option key={teacher.staffId} value={teacher.staffId}>
@@ -70,7 +70,7 @@ const AddEditTeacherEnrollment = () => {
                 </Form.Group>
                 <Form.Group controlId="classSelect">
                     <Form.Label>Class</Form.Label>
-                    <Form.Control as="select" value={classId} onChange={e => setClassId(e.target.value)} required>
+                    <Form.Control as="select" value={classId} onChange={e => setClassId(e.target.value)} required disabled={id && id !== '0'}>
                         <option value="">Select a class</option>
                         {classes.map(classItem => (
                             <option key={classItem.viewedClass.classId} value={classItem.viewedClass.classId}>

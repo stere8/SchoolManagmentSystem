@@ -22,11 +22,14 @@ import AddEditAttendance from './components/AddEditAttendance';
 import AddEditMark from './components/AddEditMark';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import ParentBoard from './components/ParentBoard';
-import StudentBoard from './components/StudentBoard';
-import TeacherBoard from './components/TeacherBoard';
+import ParentDashboard from './components/ParentDashboard';
+import StudentDashboard from './components/StudentDashboard';
+import TeacherBoard from './components/TeacherDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import UserAssignment from './components/UserAssignment';
+import TeacherMarks from "./components/TeacherMarks";
+import AddEditTeacherMarks from './components/AddEditTeacherMarks';
+import TeacherAttendance from "./components/TeacherAttendance";
 
 // Axios interceptor to add JWT token to Authorization header
 axios.interceptors.request.use(
@@ -46,6 +49,17 @@ function App() {
     const isAuthenticated = () => {
         return !!authService.getCurrentUser();
     };
+
+    const teacherDetails = JSON.parse(localStorage.getItem('details'));
+    const lessonId = teacherDetails?.assignedClasses[0].lessonId;
+    const classId = teacherDetails?.assignedClasses[0].classId;
+
+    console.log(`Lesson ID ${lessonId}`)
+
+
+    console.log(`Class ID ${classId}`)
+
+
 
     return (
         <Router>
@@ -83,6 +97,9 @@ function App() {
                 <Route path="/marks" element={<ProtectedRoute roles={['admin', 'teacher']}><Marks /></ProtectedRoute>} />
                 <Route path="/marks/add" element={<ProtectedRoute roles={['admin', 'teacher']}><AddEditMark /></ProtectedRoute>} />
                 <Route path="/marks/edit/:id" element={<ProtectedRoute roles={['admin', 'teacher']}><AddEditMark /></ProtectedRoute>} />
+                <Route path="/teachermarks" element={<ProtectedRoute roles={['teacher']}><TeacherMarks /></ProtectedRoute>} />
+                <Route path="/teachermarks/add" element={<ProtectedRoute roles={['teacher']}><AddEditTeacherMarks lessonId={lessonId} /></ProtectedRoute>} />
+                <Route path="/teacherattendance" element={<ProtectedRoute roles={['teacher']}><TeacherAttendance classId={classId} />  </ProtectedRoute> }/>
 
                 {/* Staff Routes */}
                 <Route path="/staff" element={<ProtectedRoute roles={['admin']}><Staff /></ProtectedRoute>} />
@@ -98,10 +115,10 @@ function App() {
                 <Route path="/timetable" element={<ProtectedRoute roles={['admin']}><Timetable /></ProtectedRoute>} />
 
                 {/* Parent Board Route */}
-                <Route path="/parent-board" element={<ProtectedRoute roles={['parent']}><ParentBoard /></ProtectedRoute>} />
+                <Route path="/parent-board" element={<ProtectedRoute roles={['parent']}><ParentDashboard /></ProtectedRoute>} />
 
                 {/* Student Board Route */}
-                <Route path="/student-board" element={<ProtectedRoute roles={['student']}><StudentBoard /></ProtectedRoute>} />
+                <Route path="/student-board" element={<ProtectedRoute roles={['student']}><StudentDashboard /></ProtectedRoute>} />
 
                 {/* Teacher Board Route */}
                 <Route path="/teacher-board" element={<ProtectedRoute roles={['teacher']}><TeacherBoard /></ProtectedRoute>} />
@@ -117,3 +134,4 @@ function App() {
 }
 
 export default App;
+

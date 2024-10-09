@@ -92,10 +92,10 @@ const NavigationBar = () => {
                             <LinkContainer to="/teacher-board">
                                 <Nav.Link>Teacher Board</Nav.Link>
                             </LinkContainer>
-                            <LinkContainer to="/marks">
+                            <LinkContainer to="/teachermarks">
                                 <Nav.Link>Marks</Nav.Link>
                             </LinkContainer>
-                            <LinkContainer to="/attendance">
+                            <LinkContainer to="/teacherattendance">
                                 <Nav.Link>Attendance</Nav.Link>
                             </LinkContainer>
                         </>
