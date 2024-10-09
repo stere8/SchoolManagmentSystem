@@ -21,6 +21,7 @@ namespace sms.backend.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Parent> Parents { get; set; }
         public DbSet<Teacher> Teachers { get; set; }
+        public DbSet<ParentChildAssignment> ParentChildAssignments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
