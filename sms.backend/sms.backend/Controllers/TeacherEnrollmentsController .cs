@@ -65,7 +65,7 @@ public class TeacherEnrollmentsController : ControllerBase
         try
         {
             _logger.LogInformation("Getting teacher enrollment with ID: {Id}", id);
-            var teacherEnrollment = await _context.TeacherEnrollments.FindAsync(id);
+            var teacherEnrollment = await _context.TeacherEnrollments.Where(t => t.TeacherEnrollmentId == id).FirstAsync(); ;
             if (teacherEnrollment == null)
             {
                 _logger.LogWarning("Teacher Enrollment with ID: {Id} not found", id);
@@ -153,23 +153,16 @@ public class TeacherEnrollmentsController : ControllerBase
                 return BadRequest("TeacherEnrollmentID mismatch.");
             }
 
-            _context.Entry(updatedEnrollment).State = EntityState.Modified;
+            var existingEnrollment = await _context.TeacherEnrollments.Where(t => t.TeacherEnrollmentId == id).FirstAsync();
 
-            try
+            if (existingEnrollment == null)
             {
-                await _context.SaveChangesAsync();
+                return NotFound();
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!_context.TeacherEnrollments.Any(e => e.TeacherEnrollmentId == id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+
+            existingEnrollment.LessonId = updatedEnrollment.LessonId;
+
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
@@ -178,5 +171,14 @@ public class TeacherEnrollmentsController : ControllerBase
             _logger.LogError(ex, "An error occurred while updating the teacher enrollment with ID: {Id}", id);
             return StatusCode(500, $"An error occurred while processing your teacher enrollment  request.{ex.Message}");
         }
+    }
+
+    public class TeacherEnrollmentInsert
+    {
+        public int TeacherEnrollmentId { get; set; }
+        public int StaffId { get; set; }
+        public int ClassId { get; set; }
+        public int LessonId { get; set; }
+
     }
 }

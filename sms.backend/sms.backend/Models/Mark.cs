@@ -1,6 +1,7 @@
 namespace sms.backend.Models
 {
-    public class Mark
+    public class 
+        Mark
     {
         public int MarkId { get; set; }
         public int StudentId { get; set; }

@@ -2,58 +2,53 @@
 using Microsoft.EntityFrameworkCore;
 using sms.backend.Data;
 using sms.backend.Models;
-using sms.backend.Views;
+using System.Linq;
+using System.Threading.Tasks;
 
 [ApiController]
 [Route("[controller]")]
-public class ParentsController : ControllerBase
+public class ParentController : ControllerBase
 {
     private readonly SchoolContext _context;
-    private readonly ILogger<ParentsController> _logger;
 
-    public ParentsController(SchoolContext context, ILogger<ParentsController> logger)
+    public ParentController(SchoolContext context)
     {
         _context = context;
-        _logger = logger;
     }
 
-    [HttpGet("{id}/children")]
-    public async Task<ActionResult<IEnumerable<Student>>> GetChildren(int id)
+    [HttpGet("{parentId}")]
+    public async Task<IActionResult> GetParentWithChildren(int parentId)
     {
-        try
-        {
-            var parent = await _context.Parents.Include(p => p.Children).FirstOrDefaultAsync(p => p.ParentId == id);
-            if (parent == null)
-            {
-                return NotFound();
-            }
-            return Ok(parent.Children);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "An error occurred while getting children for parent with ID: {Id}", id);
-            return StatusCode(500, $"An error occurred while processing your parent request.{ex.Message}");
-        }
-    }
+        var parent = await _context.Parents
+            .FirstOrDefaultAsync(p => p.ParentId == parentId);
 
-    [HttpPost("{id}/children")]
-    public async Task<ActionResult<Student>> AddChild(int id, Student student)
-    {
-        try
+        if (parent == null)
         {
-            var parent = await _context.Parents.FindAsync(id);
-            if (parent == null)
+            return NotFound("Parent not found");
+        }
+
+        var children = await _context.ParentChildAssignments
+            .Where(pca => pca.ParentId == parentId)
+            .Join(_context.Students,
+                pca => pca.ChildId,
+                s => s.StudentId,
+                (pca, s) => s)
+            .ToListAsync();
+
+        var result = new
+        {
+            parent.ParentId,
+            parent.FirstName,
+            parent.LastName,
+            Children = children.Select(c => new
             {
-                return NotFound();
-            }
-            parent.Children.Add(student);
-            await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetChildren), new { id = parent.ParentId }, student);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "An error occurred while adding a child for parent with ID: {Id}", id);
-            return StatusCode(500, $"An error occurred while processing your parent request.{ex.Message}");
-        }
+                c.StudentId,
+                c.FirstName,
+                c.LastName,
+                c.GradeLevel
+            })
+        };
+
+        return Ok(result);
     }
 }

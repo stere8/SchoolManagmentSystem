@@ -3,8 +3,8 @@
     public class Parent
     {
         public int ParentId { get; set; }
-        public int UserId { get; set; }
-        public User User { get; set; }
-        public ICollection<Student> Children { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
     }
 }

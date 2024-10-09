@@ -110,4 +110,10 @@ public class MarksController : ControllerBase
             return StatusCode(500, $"An error occurred while processing your marks request.{ex.Message}");
         }
     }
+
+    public class MarkView
+    {
+        public string Student { get; set; }
+        public decimal MarkDecimal { get; set; }
+    }
 }

@@ -191,6 +191,31 @@ namespace sms.backend.Controllers
             }
         }
 
+        [HttpPost("assignChildToParent")]
+        public async Task<IActionResult> AssignChildToParent(int parentId, int childId)
+        {
+            var parent = await _userManager.FindByIdAsync(parentId.ToString());
+            var child = await _context.Students.FindAsync(childId);
+
+            if (parent == null || child == null)
+            {
+                return NotFound("Parent or Child not found");
+            }
+
+            // Assuming there's a parent-child relationship table or a list on the user entity
+            var parentChildAssignment = new ParentChildAssignment
+            {
+                ParentId = parentId,
+                ChildId = childId
+            };
+
+            _context.ParentChildAssignments.Add(parentChildAssignment);
+            await _context.SaveChangesAsync();
+
+            return Ok("Child assigned to Parent successfully");
+        }
+
+
         [HttpGet("current")]
         //[Authorize]
         public async Task<IActionResult> GetCurrentUserInfo()

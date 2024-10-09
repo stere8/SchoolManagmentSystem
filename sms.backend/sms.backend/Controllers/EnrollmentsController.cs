@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using sms.backend.Models;
 
 [ApiController]
 [Route("[controller]")]
@@ -100,6 +101,37 @@ public class EnrollmentsController : ControllerBase
         {
             _logger.LogError(ex, "An error occurred while getting the enrollment for Student ID: {StudentId} and Class ID: {ClassId}", studentId, classId);
             return StatusCode(500, $"An error occurred while processing your enrollment request.{ex.Message}");
+        }
+    }
+
+    [HttpGet("class/{classId}")]
+    public async Task<ActionResult<IEnumerable<Student>>> GetEnrollmentByClass(int classId)
+        {
+        try
+        {
+            _logger.LogInformation("Getting enrollment for Class ID: {ClassId}", classId);
+
+            var enrolledStudentIds = await _context.Enrollments
+                .Where(e => e.ClassId == classId)
+                .Select(e => e.StudentId)
+                .ToListAsync();
+
+            if (enrolledStudentIds != null && enrolledStudentIds.Count > 0)
+            {
+                var students = await _context.Students
+                    .Where(s => enrolledStudentIds.Contains(s.StudentId))
+                    .ToListAsync();
+
+                return Ok(students);
+            }
+
+            _logger.LogWarning("No enrollments found for Class ID: {ClassId}", classId);
+            return NotFound();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while getting the enrollment for Class ID: {ClassId}", classId);
+            return StatusCode(500, $"An error occurred while processing your enrollment request: {ex.Message}");
         }
     }
 

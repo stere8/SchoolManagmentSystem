@@ -36,6 +36,23 @@ public class AttendanceController : ControllerBase
         }
     }
 
+    [HttpGet("lesson/{lessonId}")]
+    public async Task<ActionResult<IEnumerable<Attendance>>> GetAttendanceByLesson(int lessonId)
+    {
+        try
+        {
+            _logger.LogInformation("Getting all attendance records for a lesson");
+            var attendances = await _context.Attendances.Where(att => att.LessonId == lessonId).ToListAsync();
+            return attendances;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while getting all attendance records");
+
+            return StatusCode(500, $"An error occurred while processing your attendance request.{ex.Message}");
+        }
+    }
+
     [HttpGet("{id}")]
     public async Task<ActionResult<Attendance>> GetAttendanceRecord(int id)
     {
