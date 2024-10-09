@@ -1,15 +1,13 @@
-import axios from 'axios';
-import {BASE_URL} from '../settings';
+import { axiosInstance } from '../settings';
 
 const login = async (email, password) => {
     try {
-        const response = await axios.post(`${BASE_URL}/auth/login`, {email, password});
+        const response = await axiosInstance.post('/auth/login', { email, password });
         localStorage.setItem('user', JSON.stringify({
             token: response.data.token,
             role: response.data.role
         }));
         console.log('Login successful in auth service'); // Log success message
-
         return response.data;
     } catch (error) {
         console.error('Login failed. Auth Service:', error);
@@ -17,10 +15,10 @@ const login = async (email, password) => {
     }
 };
 
-
+// Rest of the functions remain the same...
 const register = async (email, password, role) => {
     try {
-        const response = await axios.post(`${BASE_URL}/auth/register`, {email, password, role});
+        const response = await axiosInstance.post('/auth/register', { email, password, role });
         return response.data;
     } catch (error) {
         if (error.response && error.response.data) {
@@ -45,7 +43,7 @@ const getCurrentUserInfo = async () => {
             throw new Error('User is not logged in');
         }
 
-        const response = await axios.get(`${BASE_URL}/users/current`, {
+        const response = await axiosInstance.get('/users/current', {
             headers: {
                 Authorization: `Bearer ${user.token}`
             }

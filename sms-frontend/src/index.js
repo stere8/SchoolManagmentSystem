@@ -5,6 +5,8 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+// Add this line to ignore SSL errors (for development only)
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

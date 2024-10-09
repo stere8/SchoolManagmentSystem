@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {useNavigate, Link} from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import authService from '../services/authService';
 import '../Styles/Login.css'; // Ensure this path matches your project structure
 
@@ -11,20 +11,25 @@ const Login = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const response = await authService.login(email, password).th;
-
-
+            const response = await authService.login(email, password);
             const role = response.role;
-            if (role === 'Student') {
-                navigate('/student-dashboard');
-            } else if (role === 'Teacher') {
-                navigate('/teacher-dashboard');
-            } else if (role === 'Parent') {
-                navigate('/parent-dashboard');
-            } else if (role === 'admin') {
-                navigate('/admin-dashboard');
-            } else {
-                navigate('/classes'); // Default redirection
+
+            switch(role) {
+                case 'Student':
+                    navigate('/student-dashboard');
+                    break;
+                case 'Teacher':
+                    navigate('/teacher-dashboard');
+                    break;
+                case 'Parent':
+                    navigate('/parent-dashboard');
+                    break;
+                case 'admin':
+                    navigate('/admin-dashboard');
+                    break;
+                default:
+                    navigate('/classes'); // Default redirection
+                    break;
             }
         } catch (error) {
             console.error('Login failed', error);
